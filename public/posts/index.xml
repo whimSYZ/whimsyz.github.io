@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Yuanzhe Shi</title>
-    <link>https://whimsyz.github.io/posts/</link>
+    <link>https://yuanzheshi.com/posts/</link>
     <description>Recent content in Posts on Yuanzhe Shi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 21 Jul 2020 00:22:22 +0800</lastBuildDate><atom:link href="https://whimsyz.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 21 Jul 2020 00:22:22 +0800</lastBuildDate><atom:link href="https://yuanzheshi.com/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>First post</title>
-      <link>https://whimsyz.github.io/posts/first-post/</link>
+      <link>https://yuanzheshi.com/posts/first-post/</link>
       <pubDate>Tue, 21 Jul 2020 00:22:22 +0800</pubDate>
       
-      <guid>https://whimsyz.github.io/posts/first-post/</guid>
+      <guid>https://yuanzheshi.com/posts/first-post/</guid>
       <description>First post Finally got this post thing running&amp;hellip;</description>
     </item>
     
