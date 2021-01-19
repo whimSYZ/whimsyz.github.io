@@ -29,7 +29,7 @@ pygmentscodefencesguesssyntax = true
     # "auto" (use preference set by browser)
     # "dark" (dark background, light foreground)
     # "light" (light background, dark foreground) (default)
-    colorscheme = "auto"
+    colorsheme = "auto"
     # Series see also post count
     maxSeeAlsoItems = 5
     # Enable Twemoji
@@ -40,25 +40,29 @@ pygmentscodefencesguesssyntax = true
     custom_js = []
     # If you want to use fathom(https://usefathom.com) for analytics, add this section
 
+# Cloudflare support
+[params.cloudflare]
+    token = "token"
+
 [taxonomies]
-category = "categories"
-series = "series"
-tag = "tags"
+    category = "categories"
+    series = "series"
+    tag = "tags"
 
 # Social links
 [[params.social]]
     name = "Github"
-    icon = "fab fa-github fa-2x"
+    icon = "fa fa-github"
     weight = 1
     url = "https://github.com/whimSYZ/"
 [[params.social]]
     name = "LinkedIn"
-    icon = "fab fa-linkedin"
+    icon = "fa fa-linkedin"
     weight = 2
     url = "https://www.linkedin.com/in/yuanzheshi/"
 [[params.social]]
     name = "Email"
-    icon = "fas fa-envelope"
+    icon = "fa fa-envelope"
     weight = 3
     url = "mailto:y327shi@uwaterloo.ca"
 

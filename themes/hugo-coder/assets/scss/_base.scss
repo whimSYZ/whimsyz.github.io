@@ -26,6 +26,7 @@ a {
   font-weight: 300;
   color: $link-color;
   text-decoration: none;
+  transition: all .25s ease-in;
   &:focus,
   &:hover {
     text-decoration: underline;
@@ -181,7 +182,7 @@ figure {
 
 .container {
   margin: 0 auto;
-  max-width: 120.0rem;
+  max-width: 90.0rem;
   width: 100%;
   padding-left: 2.0rem;
   padding-right: 2.0rem;
