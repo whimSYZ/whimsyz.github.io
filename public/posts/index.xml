@@ -6,7 +6,11 @@
     <description>Recent content in Posts on Yuanzhe Shi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 21 Jul 2020 00:22:22 +0800</lastBuildDate><atom:link href="https://yuanzheshi.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 21 Jul 2020 00:22:22 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuanzheshi.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
     <item>
       <title>First post</title>
       <link>https://yuanzheshi.com/posts/first-post/</link>
