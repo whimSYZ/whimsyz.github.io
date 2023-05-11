@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on Yuanzhe Shi</title>
+    <link>https://yuanzheshi.com/tags/</link>
+    <description>Recent content in Tags on Yuanzhe Shi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 28 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yuanzheshi.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>demo</title>
+      <link>https://yuanzheshi.com/tags/demo/</link>
+      <pubDate>Wed, 28 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yuanzheshi.com/tags/demo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>css</title>
+      <link>https://yuanzheshi.com/tags/css/</link>
+      <pubDate>Fri, 23 Apr 2021 01:48:41 +0800</pubDate>
+      
+      <guid>https://yuanzheshi.com/tags/css/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>html</title>
+      <link>https://yuanzheshi.com/tags/html/</link>
+      <pubDate>Fri, 23 Apr 2021 01:48:41 +0800</pubDate>
+      
+      <guid>https://yuanzheshi.com/tags/html/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hugo</title>
+      <link>https://yuanzheshi.com/tags/hugo/</link>
+      <pubDate>Fri, 23 Apr 2021 01:48:41 +0800</pubDate>
+      
+      <guid>https://yuanzheshi.com/tags/hugo/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

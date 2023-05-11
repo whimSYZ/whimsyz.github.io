@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Yuanzhe Shi</title>
+    <link>https://yuanzheshi.com/</link>
+    <description>Recent content on Yuanzhe Shi</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 28 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yuanzheshi.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gallery</title>
+      <link>https://yuanzheshi.com/gallery/</link>
+      <pubDate>Wed, 28 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://yuanzheshi.com/gallery/</guid>
+      <description>.grid { position: block; height: 100% } .item-content { z-index: 1; position: block; width: 100%; height: 100%; overflow: hidden; margin-top: -16px; margin-bottom: -16px; } .item-content  img { display: block; border-radius: 6px; } .crop-image { left: -100%; right: -100%; top: -100%; bottom: -100%; object-fit: cover; } img{ transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out, filter 0.25s ease-in-out; } .item-content:hover img{ opacity: 0; transform: ; opacity: ; filter: ; } .</description>
+    </item>
+    
+    <item>
+      <title>Hugo shortcode gallery</title>
+      <link>https://yuanzheshi.com/posts/gallery/</link>
+      <pubDate>Fri, 23 Apr 2021 01:48:41 +0800</pubDate>
+      
+      <guid>https://yuanzheshi.com/posts/gallery/</guid>
+      <description>Creating a gallery shortcode for hugo</description>
+    </item>
+    
+    <item>
+      <title>First post</title>
+      <link>https://yuanzheshi.com/posts/first-post/</link>
+      <pubDate>Tue, 21 Jul 2020 00:22:22 +0800</pubDate>
+      
+      <guid>https://yuanzheshi.com/posts/first-post/</guid>
+      <description>This is my first post</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://yuanzheshi.com/about/</link>
+      <pubDate>Fri, 17 Jan 2020 20:20:04 -0500</pubDate>
+      
+      <guid>https://yuanzheshi.com/about/</guid>
+      <description>I&amp;rsquo;m Yuanzhe Shi. A first year CS &amp;amp; CO student at University of Waterloo.
+I&amp;rsquo;m enthusiastic about computer science, visual arts, chemistry and business.</description>
+    </item>
+    
+    <item>
+      <title>Archive</title>
+      <link>https://yuanzheshi.com/archive/</link>
+      <pubDate>Fri, 17 Jan 2020 20:20:04 -0500</pubDate>
+      
+      <guid>https://yuanzheshi.com/archive/</guid>
+      <description>This is the archive for the stuff I have done.</description>
+    </item>
+    
+  </channel>
+</rss>
