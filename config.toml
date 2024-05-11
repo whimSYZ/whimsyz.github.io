@@ -35,6 +35,8 @@ pygmentscodefencesguesssyntax = true
     maxSeeAlsoItems = 5
     # Enable Twemoji
     enableTwemoji = true
+
+    enableEmoji = true
     # Custom CSS
     custom_css = []
     # Custom JS
@@ -85,10 +87,15 @@ unsafe = true
     weight = 2
     url  = "gallery/"
 [[menu.main]]
-    name = "Resume"
-    weight = 4
-    url  = "/yuanzhe-shi-resume-may-2023-en.pdf"
+    name = "☁️"
+    weight = 3
+    url = "cloud/"
 [[menu.main]]
     name = "About"
     weight = 4
     url = "about/"
+[[menu.main]]
+    name = "Resume"
+    weight = 5
+    url  = "/yuanzhe-shi-resume-may-2023-en.pdf"
+
