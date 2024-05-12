@@ -6,22 +6,35 @@
 		height: 50%;
 	}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
-<script>
+
+
+<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js",
+			"loader": "https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js",
+			"three/addons/": "https://cdn.jsdelivr.net/npm/three@0.132.2/examples/jsm/"
+		}
+	}
+</script>
+<script src=></script>
+<script src=""></script>
+<script type="module">
+import * as THREE from 'three';
+import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+	
 const width = window.innerWidth/2, height = window.innerHeight/2;
 
 // init
 
-const camera = new THREE.PerspectiveCamera( 70, width / height, 0.01, 10 );
+const camera = new THREE.PerspectiveCamera( 70, width / height, 0.01, 1000 );
 camera.position.z = 1;
 
 const scene = new THREE.Scene();
 const cloud = document.querySelector('.cloud');
 
-console.log(cloud)
-
-const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
+const geometry = new THREE.BoxGeometry( 1,1,1 );
 const material = new THREE.MeshNormalMaterial();
 
 const mesh = new THREE.Mesh( geometry, material );
@@ -30,16 +43,35 @@ scene.add( mesh );
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( width, height );
 
+const controls = new FirstPersonControls( camera, renderer.domElement );
+controls.movementSpeed = 10;
+controls.lookSpeed = 0.1;
+
+const clock = new THREE.Clock();
+
 renderer.setAnimationLoop( animate );
 cloud.appendChild( renderer.domElement );
 
+window.addEventListener( 'resize', onWindowResize );
+
+function onWindowResize() {
+
+	camera.aspect = width / height;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize( width, height );
+
+	controls.handleResize();
+}
 // animation
+
 
 function animate( time ) {
 
 	mesh.rotation.x = time / 2000;
 	mesh.rotation.y = time / 1000;
 
+	controls.update( clock.getDelta() );
 	renderer.render( scene, camera );
 
 }
