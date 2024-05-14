@@ -21,7 +21,7 @@
 <script src=""></script>
 <script type="module">
 import * as THREE from 'three';
-import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	
 const width = window.innerWidth/2, height = window.innerHeight/2;
@@ -29,7 +29,7 @@ const width = window.innerWidth/2, height = window.innerHeight/2;
 // init
 
 const camera = new THREE.PerspectiveCamera( 70, width / height, 0.01, 1000 );
-camera.position.z = 1;
+camera.position.z = 1
 
 const scene = new THREE.Scene();
 const cloud = document.querySelector('.cloud');
@@ -43,13 +43,12 @@ scene.add( mesh );
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( width, height );
 
-const controls = new FirstPersonControls( camera, renderer.domElement );
+const controls = new PointerLockControls( camera, renderer.domElement );
 controls.movementSpeed = 10;
-controls.lookSpeed = 0.1;
+controls.lookSpeed = 0.01;
 
 const clock = new THREE.Clock();
 
-renderer.setAnimationLoop( animate );
 cloud.appendChild( renderer.domElement );
 
 window.addEventListener( 'resize', onWindowResize );
@@ -66,10 +65,8 @@ function onWindowResize() {
 // animation
 
 
-function animate( time ) {
-
-	mesh.rotation.x = time / 2000;
-	mesh.rotation.y = time / 1000;
+function animate() {
+	requestAnimationFrame( animate );
 
 	controls.update( clock.getDelta() );
 	renderer.render( scene, camera );
