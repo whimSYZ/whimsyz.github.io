@@ -21,7 +21,7 @@
 <script src=""></script>
 <script type="module">
 import * as THREE from 'three';
-import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
+import { FlyControls } from 'three/addons/controls/FlyControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	
 const width = window.innerWidth/2, height = window.innerHeight/2;
@@ -43,10 +43,12 @@ scene.add( mesh );
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( width, height );
 
-const controls = new FirstPersonControls( camera, renderer.domElement );
+const controls = new FlyControls( camera, renderer.domElement );
 controls.movementSpeed = 10;
-controls.lookSpeed = 0.1;
-controls.activeLook  = false
+controls.rollSpeed = 0.1;
+controls.domElement = renderer.domElement;
+controls.dragToLook = true;
+//controls.activeLook  = false
 
 
 const clock = new THREE.Clock();
@@ -61,19 +63,13 @@ function onWindowResize() {
 	camera.updateProjectionMatrix();
 
 	renderer.setSize( width, height );
-	controls.handleResize();
+	//controls.handleResize();
 }
 // animation
 
 
 function animate() {
 	requestAnimationFrame( animate );
-
-	if (controls.mouseDragOn) {
-	controls.activeLook = true
-}else{
-	controls.activeLook = false
-}
 
 	controls.update( clock.getDelta() );
 	renderer.render( scene, camera );
