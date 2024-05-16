@@ -21,7 +21,7 @@
 <script src=""></script>
 <script type="module">
 import * as THREE from 'three';
-import { FlyControls } from 'three/addons/controls/FlyControls.js';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	
 const width = window.innerWidth/2, height = window.innerHeight/2;
@@ -43,15 +43,12 @@ scene.add( mesh );
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( width, height );
 
-const controls = new FlyControls( camera, renderer.domElement );
+const controls = new PointerLockControls( camera, renderer.domElement );
 controls.movementSpeed = 10;
-controls.rollSpeed = 0.1;
-controls.domElement = renderer.domElement;
-controls.dragToLook = true;
-//controls.activeLook  = false
-
+controls.isLocked = false
 
 const clock = new THREE.Clock();
+const globalDir = new THREE.Vector3( 0, 0, 0 );
 
 cloud.appendChild( renderer.domElement );
 
@@ -67,11 +64,94 @@ function onWindowResize() {
 }
 // animation
 
+let moveForward = false;
+let moveBackward = false;
+let moveLeft = false;
+let moveRight = false;
+let canJump = false;
+
+const velocity = 0.1;
+
+window.addEventListener( "mousedown", onMouseDown, false );
+window.addEventListener( "mouseup", onMouseUp, false );
+
+function onMouseDown( event ) {
+	controls.isLocked = true
+}
+
+function onMouseUp( event ) {
+	controls.isLocked = false
+}
+
+const onKeyDown = function ( event ) {
+
+	switch ( event.code ) {
+
+		case 'ArrowUp':
+		case 'KeyW':
+			moveForward = true;
+			break;
+
+		case 'ArrowLeft':
+		case 'KeyA':
+			moveLeft = true;
+			break;
+
+		case 'ArrowDown':
+		case 'KeyS':
+			moveBackward = true;
+			break;
+
+		case 'ArrowRight':
+		case 'KeyD':
+			moveRight = true;
+			break;
+
+	}
+
+};
+
+const onKeyUp = function ( event ) {
+
+	switch ( event.code ) {
+
+		case 'ArrowUp':
+		case 'KeyW':
+			moveForward = false;
+			break;
+
+		case 'ArrowLeft':
+		case 'KeyA':
+			moveLeft = false;
+			break;
+
+		case 'ArrowDown':
+		case 'KeyS':
+			moveBackward = false;
+			break;
+
+		case 'ArrowRight':
+		case 'KeyD':
+			moveRight = false;
+			break;
+
+	}
+
+};
+
+document.addEventListener( 'keydown', onKeyDown );
+document.addEventListener( 'keyup', onKeyUp );
 
 function animate() {
 	requestAnimationFrame( animate );
 
-	controls.update( clock.getDelta() );
+	
+	if ( moveForward ) controls.moveForward( velocity );
+	if ( moveBackward ) controls.moveForward( -velocity );
+
+	if ( moveLeft ) controls.moveRight( -velocity );
+	if ( moveRight ) controls.moveRight( velocity );
+
 	renderer.render( scene, camera );
 
 }
