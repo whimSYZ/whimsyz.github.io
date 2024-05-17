@@ -98,7 +98,7 @@ const width = window.innerWidth/2, height = window.innerHeight/2;
 		
 				}`;
 
-				const fragmentShader = /* glsl */`
+		const fragmentShader = /* glsl */`
 				varying vec3 vWorldPosition;
 				varying vec3 vSunDirection;
 				varying float vSunfade;
@@ -188,18 +188,19 @@ camera.position.set( 0, 100, 2000 );
 
 const scene = new THREE.Scene();
 const cloud = document.querySelector('.cloud');
-/*
+
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const uniforms = {
+	'turbidity': { value: 2 },
+	'rayleigh': { value: 1 },
+	'mieCoefficient': { value: 0.005 },
+	'mieDirectionalG': { value: 0.8 },
+	'sunPosition': { value: new THREE.Vector3() },
+	'up': { value: new THREE.Vector3( 0, 1, 0 ) }
+}
 const material = new THREE.ShaderMaterial( {
 	name: "SkyShader",
-	uniforms: THREE.UniformsUtils.clone( {
-		'turbidity': { value: 2 },
-		'rayleigh': { value: 1 },
-		'mieCoefficient': { value: 0.005 },
-		'mieDirectionalG': { value: 0.8 },
-		'sunPosition': { value: new THREE.Vector3() },
-		'up': { value: new THREE.Vector3( 0, 1, 0 ) }
-	}),
+	uniforms: uniforms,
 	vertexShader: vertexShader,
 	fragmentShader: fragmentShader,
 	side: THREE.BackSide,
@@ -207,21 +208,17 @@ const material = new THREE.ShaderMaterial( {
 } );
 
 let mesh = new THREE.Mesh( geometry, material );
-mesh.scale.setScalar( 450000 );
-*/
-const sky = new Sky();
-sky.scale.setScalar( 450000 );
-scene.add( sky );
+mesh.scale.setScalar( 1000000 );
+
+scene.add( mesh );
 
 const sun = new THREE.Vector3();
+const phi = THREE.MathUtils.degToRad( 89 );
+const theta = THREE.MathUtils.degToRad( 180 );
 
-const uniforms = sky.material.uniforms;
-					const phi = THREE.MathUtils.degToRad( 88 );
-					const theta = THREE.MathUtils.degToRad( 180 );
+sun.setFromSphericalCoords( 1, phi, theta );
 
-					sun.setFromSphericalCoords( 1, phi, theta );
-
-					uniforms[ 'sunPosition' ].value.copy( sun );
+uniforms[ 'sunPosition' ].value.copy( sun );
 
 
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -364,7 +361,6 @@ const onMoveRight = function (distance) {
 
 function animate() {
 	requestAnimationFrame( animate );
-
 	
 	if ( moveForward ) onMoveForward( velocity );
 	if ( moveBackward ) onMoveForward( -velocity );
