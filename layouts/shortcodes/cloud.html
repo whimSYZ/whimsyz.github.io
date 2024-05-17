@@ -2,8 +2,9 @@
 
 <style>
 	.cloud {
-		width: 50%;
-		height: 50%;
+		display: flex;
+		position: absolute;
+		margin: auto;
 	}
 </style>
 
@@ -68,19 +69,36 @@ let moveForward = false;
 let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
-let canJump = false;
 
 const velocity = 0.05;
 
-window.addEventListener( "mousedown", onMouseDown, false );
-window.addEventListener( "mouseup", onMouseUp, false );
+const euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
+const vector = new THREE.Vector3();
+
+let mouseDown = false
 
 function onMouseDown( event ) {
-	controls.isLocked = true
+	mouseDown = true
 }
 
 function onMouseUp( event ) {
-	controls.isLocked = false
+	mouseDown = false
+}
+
+function onMouseMove( event ) {
+	if ( mouseDown === false ) return;
+
+	const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+	const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+
+	euler.setFromQuaternion( camera.quaternion );
+
+	euler.y -= movementX * 0.002;
+	euler.x -= movementY * 0.002;
+
+	euler.x = Math.max( - Math.PI / 2, Math.min(Math.PI / 2, euler.x ) );
+
+	camera.quaternion.setFromEuler( euler );
 }
 
 const onKeyDown = function ( event ) {
@@ -139,18 +157,42 @@ const onKeyUp = function ( event ) {
 
 };
 
-document.addEventListener( 'keydown', onKeyDown );
-document.addEventListener( 'keyup', onKeyUp );
+function getDirection( v ) {
+	return v.set( 0, 0, - 1 ).applyQuaternion( camera.quaternion );
+}
+
+
+window.addEventListener( "mousedown", onMouseDown, false );
+window.addEventListener( "mouseup", onMouseUp, false );
+window.addEventListener( "mousemove", onMouseMove, false );
+
+window.addEventListener( 'keydown', onKeyDown );
+window.addEventListener( 'keyup', onKeyUp );
+
+
+const onMoveForward = function (distance) {
+	vector.copy(controls.getDirection(vector));
+
+	camera.position.addScaledVector(vector, distance);
+}
+
+const onMoveRight = function (distance) {
+	vector.setFromMatrixColumn( camera.matrix, 0 );
+
+		camera.position.addScaledVector( vector, distance );
+}
+
+
 
 function animate() {
 	requestAnimationFrame( animate );
 
 	
-	if ( moveForward ) controls.moveForward( velocity );
-	if ( moveBackward ) controls.moveForward( -velocity );
+	if ( moveForward ) onMoveForward( velocity );
+	if ( moveBackward ) onMoveForward( -velocity );
 
-	if ( moveLeft ) controls.moveRight( -velocity );
-	if ( moveRight ) controls.moveRight( velocity );
+	if ( moveLeft ) onMoveRight( -velocity );
+	if ( moveRight ) onMoveRight( velocity );
 
 	renderer.render( scene, camera );
 
