@@ -22,7 +22,6 @@
 <script src=""></script>
 <script type="module">
 import * as THREE from 'three';
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 	
 const width = window.innerWidth/2, height = window.innerHeight/2;
@@ -43,10 +42,6 @@ scene.add( mesh );
 
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( width, height );
-
-const controls = new PointerLockControls( camera, renderer.domElement );
-controls.movementSpeed = 10;
-controls.isLocked = false
 
 const clock = new THREE.Clock();
 const globalDir = new THREE.Vector3( 0, 0, 0 );
@@ -171,7 +166,7 @@ window.addEventListener( 'keyup', onKeyUp );
 
 
 const onMoveForward = function (distance) {
-	vector.copy(controls.getDirection(vector));
+	vector.copy(camera.getWorldDirection(vector));
 
 	camera.position.addScaledVector(vector, distance);
 }
