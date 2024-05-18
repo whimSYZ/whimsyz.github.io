@@ -23,6 +23,7 @@
 import * as THREE from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js';
+import { TGALoader } from 'three/addons/loaders/TGALoader.js';
 	
 const width = window.innerWidth/2, height = window.innerHeight/2;
 
@@ -467,6 +468,18 @@ let i = 0;
 				texture.needsUpdate = true;
 
 
+const loader = new TGALoader();
+
+// load a resource
+const noiseErosion = loader.load(
+	'/noiseErosion.tga'
+)
+
+const noiseShape = loader.load(
+	'/noiseShape.tga'
+)
+
+
 const sunPosition = new THREE.Vector3();
 const phi = THREE.MathUtils.degToRad( 90-2 );
 const theta = THREE.MathUtils.degToRad( 180 );
@@ -492,8 +505,8 @@ const uniforms = {
 "cloudStartRadius": { value: 520000.0},
 "cloudEndRadius": { value: 530000.0},
 "toneMapperColor": { value: new THREE.Vector3(1.0, 0.5, 1.0)},
-"perlworl": { value: texture },
- "worl": { value: texture},
+"perlworl": { value: noiseErosion },
+ "worl": { value: noiseShape},
 }
 const material = new THREE.ShaderMaterial( {
 	glslVersion: THREE.GLSL3,
