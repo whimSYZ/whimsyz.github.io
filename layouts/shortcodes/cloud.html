@@ -22,166 +22,9 @@
 <script type="module">
 import * as THREE from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
+import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js';
 	
 const width = window.innerWidth/2, height = window.innerHeight/2;
-
-// init
-				const vertexShader = /* glsl */`
-				uniform vec3 sunPosition;
-				uniform float rayleigh;
-				uniform float turbidity;
-				uniform float mieCoefficient;
-				uniform vec3 up;
-		
-				varying vec3 vWorldPosition;
-				varying vec3 vSunDirection;
-				varying float vSunfade;
-				varying vec3 vBetaR;
-				varying vec3 vBetaM;
-				varying float vSunE;
-		
-				// constants for atmospheric scattering
-				const float e = 2.71828182845904523536028747135266249775724709369995957;
-				const float pi = 3.141592653589793238462643383279502884197169;
-		
-				// wavelength of used primaries, according to preetham
-				const vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );
-				// this pre-calcuation replaces older TotalRayleigh(vec3 lambda) function:
-				// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))
-				const vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );
-		
-				// mie stuff
-				// K coefficient for the primaries
-				const float v = 4.0;
-				const vec3 K = vec3( 0.686, 0.678, 0.666 );
-				// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K
-				const vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );
-		
-				// earth shadow hack
-				// cutoffAngle = pi / 1.95;
-				const float cutoffAngle = 1.6110731556870734;
-				const float steepness = 1.5;
-				const float EE = 1000.0;
-		
-				float sunIntensity( float zenithAngleCos ) {
-					zenithAngleCos = clamp( zenithAngleCos, -1.0, 1.0 );
-					return EE * max( 0.0, 1.0 - pow( e, -( ( cutoffAngle - acos( zenithAngleCos ) ) / steepness ) ) );
-				}
-		
-				vec3 totalMie( float T ) {
-					float c = ( 0.2 * T ) * 10E-18;
-					return 0.434 * c * MieConst;
-				}
-		
-				void main() {
-		
-					vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
-					vWorldPosition = worldPosition.xyz;
-		
-					gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-					gl_Position.z = gl_Position.w; // set z to camera.far
-		
-					vSunDirection = normalize( sunPosition );
-		
-					vSunE = sunIntensity( dot( vSunDirection, up ) );
-		
-					vSunfade = 1.0 - clamp( 1.0 - exp( ( sunPosition.y / 450000.0 ) ), 0.0, 1.0 );
-		
-					float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );
-		
-					// extinction (absorbtion + out scattering)
-					// rayleigh coefficients
-					vBetaR = totalRayleigh * rayleighCoefficient;
-		
-					// mie coefficients
-					vBetaM = totalMie( turbidity ) * mieCoefficient;
-		
-				}`;
-
-		const fragmentShader = /* glsl */`
-				varying vec3 vWorldPosition;
-				varying vec3 vSunDirection;
-				varying float vSunfade;
-				varying vec3 vBetaR;
-				varying vec3 vBetaM;
-				varying float vSunE;
-		
-				uniform float mieDirectionalG;
-				uniform vec3 up;
-		
-				// constants for atmospheric scattering
-				const float pi = 3.141592653589793238462643383279502884197169;
-		
-				const float n = 1.0003; // refractive index of air
-				const float N = 2.545E25; // number of molecules per unit volume for air at 288.15K and 1013mb (sea level -45 celsius)
-		
-				// optical length at zenith for molecules
-				const float rayleighZenithLength = 8.4E3;
-				const float mieZenithLength = 1.25E3;
-				// 66 arc seconds -> degrees, and the cosine of that
-				const float sunAngularDiameterCos = 0.999956676946448443553574619906976478926848692873900859324;
-		
-				// 3.0 / ( 16.0 * pi )
-				const float THREE_OVER_SIXTEENPI = 0.05968310365946075;
-				// 1.0 / ( 4.0 * pi )
-				const float ONE_OVER_FOURPI = 0.07957747154594767;
-		
-				float rayleighPhase( float cosTheta ) {
-					return THREE_OVER_SIXTEENPI * ( 1.0 + pow( cosTheta, 2.0 ) );
-				}
-		
-				float hgPhase( float cosTheta, float g ) {
-					float g2 = pow( g, 2.0 );
-					float inverse = 1.0 / pow( 1.0 - 2.0 * g * cosTheta + g2, 1.5 );
-					return ONE_OVER_FOURPI * ( ( 1.0 - g2 ) * inverse );
-				}
-		
-				void main() {
-		
-					vec3 direction = normalize( vWorldPosition - cameraPosition );
-		
-					// optical length
-					// cutoff angle at 90 to avoid singularity in next formula.
-					float zenithAngle = acos( max( 0.0, dot( up, direction ) ) );
-					float inverse = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );
-					float sR = rayleighZenithLength * inverse;
-					float sM = mieZenithLength * inverse;
-		
-					// combined extinction factor
-					vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );
-		
-					// in scattering
-					float cosTheta = dot( direction, vSunDirection );
-		
-					float rPhase = rayleighPhase( cosTheta * 0.5 + 0.5 );
-					vec3 betaRTheta = vBetaR * rPhase;
-		
-					float mPhase = hgPhase( cosTheta, mieDirectionalG );
-					vec3 betaMTheta = vBetaM * mPhase;
-		
-					vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );
-					Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - dot( up, vSunDirection ), 5.0 ), 0.0, 1.0 ) );
-		
-					// nightsky
-					float theta = acos( direction.y ); // elevation --> y-axis, [-pi/2, pi/2]
-					float phi = atan( direction.z, direction.x ); // azimuth --> x-axis [-pi/2, pi/2]
-					vec2 uv = vec2( phi, theta ) / vec2( 2.0 * pi, pi ) + vec2( 0.5, 0.0 );
-					vec3 L0 = vec3( 0.1 ) * Fex;
-		
-					// composition + solar disc
-					float sundisk = smoothstep( sunAngularDiameterCos, sunAngularDiameterCos + 0.00002, cosTheta );
-					L0 += ( vSunE * 19000.0 * Fex ) * sundisk;
-		
-					vec3 texColor = ( Lin + L0 ) * 0.04 + vec3( 0.0, 0.0003, 0.00075 );
-		
-					vec3 retColor = pow( texColor, vec3( 1.0 / ( 1.2 + ( 1.2 * vSunfade ) ) ) );
-		
-					gl_FragColor = vec4( retColor, 1.0 );
-		
-					#include <tonemapping_fragment>
-					#include <colorspace_fragment>
-		
-				}`;
 
 const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 100, 2000000 );
 camera.position.set( 0, 100, 2000 );
@@ -190,16 +33,471 @@ const scene = new THREE.Scene();
 const cloud = document.querySelector('.cloud');
 
 const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
+const clock = new THREE.Clock();
+
+// init
+				const vertexShader = /* glsl */`
+uniform vec3 sunPosition;
+const float rayleigh = 2.0;
+const float turbidity = 10.0;
+const float mieCoefficient = 0.005;
+
+out vec3 vSunDirection;
+out float vSunfade;
+out vec3 vBetaR;
+out vec3 vBetaM;
+out float vSunE;
+
+const vec3 up = vec3( 0.0, 1.0, 0.0 );
+
+// constants for atmospheric scattering
+const float e = 2.71828182845904523536028747135266249775724709369995957;
+const float pi = 3.141592653589793238462643383279502884197169;
+
+// wavelength of used primaries, according to preetham
+const vec3 lambda = vec3( 680E-9, 550E-9, 450E-9 );
+// this pre-calcuation replaces older TotalRayleigh(vec3 lambda) function:
+// (8.0 * pow(pi, 3.0) * pow(pow(n, 2.0) - 1.0, 2.0) * (6.0 + 3.0 * pn)) / (3.0 * N * pow(lambda, vec3(4.0)) * (6.0 - 7.0 * pn))
+const vec3 totalRayleigh = vec3( 5.804542996261093E-6, 1.3562911419845635E-5, 3.0265902468824876E-5 );
+
+// mie stuff
+// K coefficient for the primaries
+const float v = 4.0;
+const vec3 K = vec3( 0.686, 0.678, 0.666 );
+// MieConst = pi * pow( ( 2.0 * pi ) / lambda, vec3( v - 2.0 ) ) * K
+const vec3 MieConst = vec3( 1.8399918514433978E14, 2.7798023919660528E14, 4.0790479543861094E14 );
+
+// earth shadow hack
+// cutoffAngle = pi / 1.95;
+const float cutoffAngle = 1.6110731556870734;
+const float steepness = 1.5;
+const float EE = 1000.0;
+
+float sunIntensity( float zenithAngleCos ) {
+	zenithAngleCos = clamp( zenithAngleCos, -1.0, 1.0 );
+	return EE * max( 0.0, 1.0 - pow( e, -( ( cutoffAngle - acos( zenithAngleCos ) ) / steepness ) ) );
+}
+
+vec3 totalMie( float T ) {
+	float c = ( 0.2 * T ) * 10E-18;
+	return 0.434 * c * MieConst;
+}
+
+void main() {
+	gl_Position = vec4( position, 1.0 );
+
+	vSunDirection = normalize( sunPosition );
+
+	vSunE = sunIntensity( dot( vSunDirection, up ) );
+
+	vSunfade = 1.0 - clamp( 1.0 - exp( ( sunPosition.y / 450000.0 ) ), 0.0, 1.0 );
+
+	float rayleighCoefficient = rayleigh - ( 1.0 * ( 1.0 - vSunfade ) );
+	// extinction (absorbtion + out scattering)
+	// rayleigh coefficients
+	vBetaR = totalRayleigh * rayleighCoefficient;
+	// mie coefficients
+	vBetaM = totalMie( turbidity ) * mieCoefficient;
+}
+`;
+
+		const fragmentShader = /* glsl */`
+		uniform sampler3D perlworl;
+		uniform sampler3D worl;
+		
+		uniform mat4 invView;
+		uniform mat4 invProj;
+		uniform float time;		
+		uniform vec2 resolution;	
+		
+		uniform vec3 camera;
+		
+		uniform float coverage;	
+		uniform float cloudType;
+		uniform float anvilBias;
+		uniform float sunIntensity;	
+		uniform float earthRadius;				
+		uniform float cloudStartRadius;	
+		uniform float cloudEndRadius;
+		uniform float toneMapperEyeExposure;	
+		uniform vec3 toneMapperColor;
+		
+		uniform float eccentricity;
+		uniform float silver_intensity;
+		uniform float silver_spread;
+		
+		//preetham variables
+		in vec3 vSunDirection;
+		in float vSunfade;
+		in vec3 vBetaR;
+		in vec3 vBetaM;
+		in float vSunE;
+		in vec3 vAmbient;
+		in vec3 vSunColor;
+		
+		out vec4 color;
+		
+		const float pi = 3.141592653589793238462643383279502884197169;
+		const float mieDirectionalG = 0.8;
+		const float rayleighZenithLength = 8.4E3;
+		const float mieZenithLength = 1.25E3;
+		const vec3 up = vec3( 0.0, 1.0, 0.0 );
+		
+		const float sunAngularDiameterCos = cos(0.02);
+		
+		float remap(const float originalValue, const float originalMin, const float originalMax, const float newMin, const float newMax)
+		{
+			return newMin + (((originalValue - originalMin) / (originalMax - originalMin)) * (newMax - newMin));
+		}
+		
+		float HG(float costheta, float g) {
+			return ((1.0 - g*g) / (pow(1.0 + g*g - 2.0 * g * costheta, 1.5))) / (4.0 * pi);
+		}
+		
+		vec3 preetham(const vec3 dirToAtomsphere) {
+			float zenithAngle = acos( max( 0.0, dot( up, normalize( dirToAtomsphere ) ) ) );
+			float inv = 1.0 / ( cos( zenithAngle ) + 0.15 * pow( 93.885 - ( ( zenithAngle * 180.0 ) / pi ), -1.253 ) );
+			float sR = rayleighZenithLength * inv;
+			float sM = mieZenithLength * inv;
+		
+			vec3 Fex = exp( -( vBetaR * sR + vBetaM * sM ) );
+		
+			float cosTheta = dot( normalize( dirToAtomsphere ), vSunDirection );
+		
+			float rPhase = 3.0/(16.0*pi) * ( 1.0 + pow( cosTheta*0.5+0.5, 2.0 ) );
+			vec3 betaRTheta = vBetaR * rPhase;
+		
+			float mPhase = HG( cosTheta, mieDirectionalG );
+			vec3 betaMTheta = vBetaM * mPhase;
+		
+			vec3 Lin = pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * ( 1.0 - Fex ), vec3( 1.5 ) );
+			Lin *= mix( vec3( 1.0 ), pow( vSunE * ( ( betaRTheta + betaMTheta ) / ( vBetaR + vBetaM ) ) * Fex, vec3( 1.0 / 2.0 ) ), clamp( pow( 1.0 - dot( up, vSunDirection ), 5.0 ), 0.0, 1.0 ) );
+		
+			vec3 L0 = vec3( 0.5 ) * Fex;
+		
+			float sundisk = smoothstep( sunAngularDiameterCos, sunAngularDiameterCos + 0.00002, cosTheta );
+			L0 += ( vSunE * 19000.0 * Fex ) * sundisk;
+		
+			vec3 texColor = ( Lin + L0 ) * 0.04 + vec3( 0.0, 0.0003, 0.00075 );
+		
+			vec3 retColor = pow( texColor, vec3( 1.0 / ( 1.2 + ( 1.2 * vSunfade ) ) ) );
+		
+			retColor = mix(retColor, toneMapperColor, 0.2);
+			return retColor;
+		}
+		
+		float random (vec2 st) {
+			return fract(sin(dot(st.xy,
+								 vec2(12.9898,78.233)))*
+				43758.5453123);
+		}
+		
+		
+		//	Simplex 3D Noise 
+		//	by Ian McEwan, Ashima Arts
+		//
+		vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
+		vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+		
+		float snoise(vec3 v){ 
+		  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+		  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+		
+		// First corner
+		  vec3 i  = floor(v + dot(v, C.yyy) );
+		  vec3 x0 =   v - i + dot(i, C.xxx) ;
+		
+		// Other corners
+		  vec3 g = step(x0.yzx, x0.xyz);
+		  vec3 l = 1.0 - g;
+		  vec3 i1 = min( g.xyz, l.zxy );
+		  vec3 i2 = max( g.xyz, l.zxy );
+		
+		  //  x0 = x0 - 0. + 0.0 * C 
+		  vec3 x1 = x0 - i1 + 1.0 * C.xxx;
+		  vec3 x2 = x0 - i2 + 2.0 * C.xxx;
+		  vec3 x3 = x0 - 1. + 3.0 * C.xxx;
+		
+		// Permutations
+		  i = mod(i, 289.0 ); 
+		  vec4 p = permute( permute( permute( 
+					 i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
+				   + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
+				   + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+		
+		// Gradients
+		// ( N*N points uniformly over a square, mapped onto an octahedron.)
+		  float n_ = 1.0/7.0; // N=7
+		  vec3  ns = n_ * D.wyz - D.xzx;
+		
+		  vec4 j = p - 49.0 * floor(p * ns.z *ns.z);  //  mod(p,N*N)
+		
+		  vec4 x_ = floor(j * ns.z);
+		  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)
+		
+		  vec4 x = x_ *ns.x + ns.yyyy;
+		  vec4 y = y_ *ns.x + ns.yyyy;
+		  vec4 h = 1.0 - abs(x) - abs(y);
+		
+		  vec4 b0 = vec4( x.xy, y.xy );
+		  vec4 b1 = vec4( x.zw, y.zw );
+		
+		  vec4 s0 = floor(b0)*2.0 + 1.0;
+		  vec4 s1 = floor(b1)*2.0 + 1.0;
+		  vec4 sh = -step(h, vec4(0.0));
+		
+		  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+		  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+		
+		  vec3 p0 = vec3(a0.xy,h.x);
+		  vec3 p1 = vec3(a0.zw,h.y);
+		  vec3 p2 = vec3(a1.xy,h.z);
+		  vec3 p3 = vec3(a1.zw,h.w);
+		
+		//Normalise gradients
+		  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+		  p0 *= norm.x;
+		  p1 *= norm.y;
+		  p2 *= norm.z;
+		  p3 *= norm.w;
+		
+		// Mix final noise value
+		  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+		  m = m * m;
+		  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
+										dot(p2,x2), dot(p3,x3) ) );
+		}
+		
+		
+		const vec3 RANDOM_VECTORS[6] = vec3[6]
+		(
+			vec3( 0.38051305f,  0.92453449f, -0.02111345f),
+			vec3(-0.50625799f, -0.03590792f, -0.86163418f),
+			vec3(-0.32509218f, -0.94557439f,  0.01428793f),
+			vec3( 0.09026238f, -0.27376545f,  0.95755165f),
+			vec3( 0.28128598f,  0.42443639f, -0.86065785f),
+			vec3(-0.16852403f,  0.14748697f,  0.97460106f)
+		);
+		
+		float GetHeightFractionForPoint(vec3 worldPosition)
+		{ 
+			float heightFraction = (length(worldPosition) - cloudStartRadius) / (cloudEndRadius - cloudStartRadius); 
+			return clamp(heightFraction, 0.0, 1.0);
+		}
+		
+		vec4 mixGradients(const float cloudType)
+		{
+			const vec4 STRATUS_GRADIENT = vec4(0.0, 0.1, 0.2, 0.3);
+			const vec4 STRATOCUMULUS_GRADIENT = vec4(0.02, 0.2, 0.48, 0.625);
+			const vec4 CUMULUS_GRADIENT = vec4(0.0, 0.1625, 0.88, 0.98);
+			
+			float stratus = 1.0f - clamp(cloudType * 2.0f, 0.0, 1.0);
+			float stratocumulus = 1.0f - abs(cloudType - 0.5f) * 2.0f;
+			float cumulus = clamp(cloudType - 0.5f, 0.0, 1.0) * 2.0f;
+			return STRATUS_GRADIENT * stratus + STRATOCUMULUS_GRADIENT * stratocumulus + CUMULUS_GRADIENT * cumulus;
+		}
+		
+		float densityHeightGradient(const float heightFraction, const float cloudType) 
+		{
+			vec4 cloudGradient = mixGradients(cloudType);
+			float density = smoothstep(cloudGradient.x, cloudGradient.y, heightFraction) - smoothstep(cloudGradient.z, cloudGradient.w, heightFraction);
+			return density;
+		}
+		
+		vec3 raySphereIntersection(const vec3 ro, const vec3 rd, const float r) 
+		{	
+			float b = 2.0 * dot(rd, ro);
+			float c = dot(ro, ro) - (r * r);
+			float dis = sqrt((b*b) - 4.0*c);
+			float t1 = (-b - dis)*0.5;
+			float t2 = (-b + dis)*0.5;
+			float tm = max(t1, t2);
+			vec3 result = ro+tm * rd;
+			return result;
+		}
+		
+		float cloudDensity(vec3 p, const float LOD) {
+			float heightFraction = GetHeightFractionForPoint(p);
+		
+			p += 1000.0*snoise(p*0.0003);
+		
+			vec4 lowFrequencyNoises = textureLod(perlworl, p*0.000005, LOD);
+			float lowFrequencyFBM = lowFrequencyNoises.g * 0.625 + lowFrequencyNoises.b * 0.25 + lowFrequencyNoises.a * 0.125;
+			
+			vec3 highFrequencyNoises = texture(worl, p*0.003, LOD).rgb;
+			float highFrequencyFBM = highFrequencyNoises.r * 0.625 + highFrequencyNoises.g * 0.25 + highFrequencyNoises.b * 0.125;
+		
+			float baseCloud = remap(lowFrequencyNoises.r, -(1.0 - lowFrequencyFBM), 1.0, 0.0, 1.0);
+		
+			baseCloud = remap(lowFrequencyFBM, highFrequencyFBM, 1.0, 0.0, 1.0);
+		
+			float grad = densityHeightGradient(heightFraction, cloudType);
+			float new_coverage = pow(coverage, remap(heightFraction, 0.7, 0.8, 1.0, mix(1.0, 0.5, anvilBias)));
+		
+			float coverageCloud = remap(baseCloud*grad, 1.0 - new_coverage, 1.0, 0.0, 1.0);
+			coverageCloud *= new_coverage;
+		
+			return clamp(coverageCloud, 0.0, 1.0);
+		
+		}
+		
+		vec4 raymarch(const vec3 start, const vec3 marchStep, const int depth, const vec3 sunColor, const vec3 ambientLightColor){
+			vec3 p = start;
+		
+			vec3 lightDir = vSunDirection * length(marchStep);
+			float costheta = dot(normalize(lightDir), normalize(marchStep));
+			float phase = max(HG(costheta, eccentricity), silver_intensity * HG(costheta, 0.99-silver_spread));
+			
+			vec3 resultColor = vec3(0.0);
+			float alpha = 0.0;
+			float density = 0.0;
+		
+			for(int i = 0; i < depth; i++){
+				p += marchStep;
+		
+				density = cloudDensity(p, 1.0);
+		
+				vec3 lightPos = p;
+				float scatterDensity = 0.0;
+		
+				if(density > 0.0){
+					
+					for (int j = 0; j < 6; j++){
+						lightPos += (lightDir + length(lightDir) * RANDOM_VECTORS[j]*  float(j));
+						scatterDensity += cloudDensity(lightPos, float(j));
+					}
+		
+					lightPos += lightDir * length(lightDir);
+					scatterDensity += cloudDensity(lightPos, 1.0);
+		
+					float beers = max(exp(-2.0*scatterDensity), exp(-2.0*scatterDensity * 0.25) * 0.7);	
+					float powderSugar = 1.0 - exp(-2.0 * scatterDensity);
+					float lightEnergy = 5.0 * beers * powderSugar * phase;
+							
+					vec3 ambientLightColorComponent = ambientLightColor * 0.7;
+					vec3 sunColorComponent = GetHeightFractionForPoint(p) *  pow(sunColor, vec3(sunIntensity));		
+					vec3 cloudColor = ambientLightColorComponent + vec3(1.0) * sunColorComponent * lightEnergy;
+		
+					cloudColor -= clamp(costheta, 0.0, vSunDirection.y*2.0);
+		
+					resultColor += (1.0 - alpha) * cloudColor * density;
+					
+					alpha += (1.0 - alpha) * density;
+		
+					if (alpha > 0.99){
+						break;
+					}
+				}
+			}
+			return vec4(resultColor, alpha);
+		}
+		
+		
+		void main()
+		{
+			vec2 screenSpaceFragmentCoordsInTextureCoords = gl_FragCoord.xy / resolution;
+			vec4 screenSpaceFragmentCoordsInViewSpace = invProj * vec4(vec2(2.0 * screenSpaceFragmentCoordsInTextureCoords - 1.0), 1.0, 1.0);
+			screenSpaceFragmentCoordsInViewSpace = vec4(screenSpaceFragmentCoordsInViewSpace.xy, -1.0, 0.0);
+			vec3 fragmentWorldSpacePosition = (invView * screenSpaceFragmentCoordsInViewSpace).xyz;
+		
+			vec3 viewDir = normalize(fragmentWorldSpacePosition);
+			vec3 cameraEarthPos = vec3(camera.x, camera.y + earthRadius, camera.z);		
+		
+			vec3 ambientLightColor = preetham(normalize(vec3(0.3, 0.2, 0.0)));
+			vec3 sunColor = preetham(normalize(vSunDirection));
+			
+			vec3 start = raySphereIntersection(cameraEarthPos, viewDir, cloudStartRadius);
+			vec3 end = raySphereIntersection(cameraEarthPos, viewDir, cloudEndRadius);
+				
+			float depth = (mix(100.0, 50.0, dot(viewDir, vec3(0.0, 1.0, 0.0))));
+			float waterShade = 1.0;
+		
+			if(end.y < earthRadius){
+				waterShade = mix(0.6, 0.0, -(end.y - earthRadius)*0.0000008);
+				viewDir.y = -viewDir.y;
+				start = raySphereIntersection(cameraEarthPos, viewDir, cloudStartRadius);
+				end = raySphereIntersection(cameraEarthPos, viewDir, cloudEndRadius);
+			}
+		
+			vec3 marchStep = viewDir * (length(end-start) / depth);
+		
+			vec3 resultColor = preetham(viewDir);
+			vec4 raymarchResult = raymarch(start, marchStep, int(depth), sunColor, resultColor);
+			
+			resultColor = raymarchResult.a * raymarchResult.xyz + (1.0-raymarchResult.a) * resultColor;
+			resultColor *= waterShade;
+		
+			resultColor = vec3(1.0) - exp(-resultColor.xyz * toneMapperEyeExposure);
+		
+			color = vec4(resultColor, 1.0);
+		}
+		`;
+
+		const size = 128;
+		const data = new Uint8Array( size * size * size );
+
+
+let i = 0;
+				const scale = 0.05;
+				const perlin = new ImprovedNoise();
+				const vector3 = new THREE.Vector3();
+
+				for ( let z = 0; z < size; z ++ ) {
+
+					for ( let y = 0; y < size; y ++ ) {
+
+						for ( let x = 0; x < size; x ++ ) {
+
+							const d = 1.0 - vector3.set( x, y, z ).subScalar( size / 2 ).divideScalar( size ).length();
+							data[ i ] = ( 128 + 128 * perlin.noise( x * scale / 1.5, y * scale, z * scale / 1.5 ) ) * d * d;
+							i ++;
+
+						}
+
+					}
+
+				}
+
+				const texture = new THREE.Data3DTexture( data, size, size, size );
+				texture.format = THREE.RedFormat;
+				texture.minFilter = THREE.LinearFilter;
+				texture.magFilter = THREE.LinearFilter;
+				texture.unpackAlignment = 1;
+				texture.needsUpdate = true;
+
+
+const sunPosition = new THREE.Vector3();
+const phi = THREE.MathUtils.degToRad( 45 );
+const theta = THREE.MathUtils.degToRad( 180 );
+
+sunPosition.setFromSphericalCoords( 1, phi, theta );
+
 const uniforms = {
-	'turbidity': { value: 2 },
-	'rayleigh': { value: 1 },
-	'mieCoefficient': { value: 0.005 },
-	'mieDirectionalG': { value: 0.8 },
-	'sunPosition': { value: new THREE.Vector3() },
-	'up': { value: new THREE.Vector3( 0, 1, 0 ) }
+"invView": { value: camera.matrixWorldInverse },
+"invProj": { value: camera.projectionMatrixInverse  },
+"camera": { value: camera.position },
+"time": { value: clock.getElapsedTime() },
+"resolution": { value: new THREE.Vector2(width, height) },
+"sunIntensity": { value: 0.6 },
+"sunPosition": { value: sunPosition },
+"coverage": { value: 0.3 },
+"cloudType": { value: 1.0 },
+"anvilBias": { value: 0.1 },
+"toneMapperEyeExposure": { value: 0.8 },
+"eccentricity": { value: 0.5 },
+"silver_intensity": { value: 0.15 },
+"silver_spread": { value: 0.5 },
+"earthRadius": { value:  500000.0},
+"cloudStartRadius": { value: 520000.0},
+"cloudEndRadius": { value: 530000.0},
+"toneMapperColor": { value: new THREE.Vector3(1.0, 0.5, 1.0)},
+"perlworl": { value: texture },
+ "worl": { value: texture},
 }
 const material = new THREE.ShaderMaterial( {
-	name: "SkyShader",
+	glslVersion: THREE.GLSL3,
+	name: "Cloud",
 	uniforms: uniforms,
 	vertexShader: vertexShader,
 	fragmentShader: fragmentShader,
@@ -212,20 +510,11 @@ mesh.scale.setScalar( 1000000 );
 
 scene.add( mesh );
 
-const sun = new THREE.Vector3();
-const phi = THREE.MathUtils.degToRad( 89 );
-const theta = THREE.MathUtils.degToRad( 180 );
-
-sun.setFromSphericalCoords( 1, phi, theta );
-
-uniforms[ 'sunPosition' ].value.copy( sun );
-
-
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( width, height );
 renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.toneMapping = THREE.ACESFilmicToneMapping;
-				renderer.toneMappingExposure = 0.5;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.5;
 
 cloud.appendChild( renderer.domElement );
 
