@@ -325,9 +325,16 @@ void main() {
 		
 			vec4 lowFrequencyNoises = textureLod(perlworl, p*0.000005, LOD);
 			float lowFrequencyFBM = lowFrequencyNoises.g * 0.625 + lowFrequencyNoises.b * 0.25 + lowFrequencyNoises.a * 0.125;
+
+			return clamp(snoise(p*0.0003), 0.0, 1.0);
 			
 			vec3 highFrequencyNoises = texture(worl, p*0.003, LOD).rgb;
 			float highFrequencyFBM = highFrequencyNoises.r * 0.625 + highFrequencyNoises.g * 0.25 + highFrequencyNoises.b * 0.125;
+
+			/*if (lowFrequencyFBM <= 1.0){
+				return 1.0;
+			}*/
+			
 		
 			float baseCloud = remap(lowFrequencyNoises.r, -(1.0 - lowFrequencyFBM), 1.0, 0.0, 1.0);
 		
