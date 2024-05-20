@@ -464,7 +464,6 @@ noiseErosionTexture.needsUpdate = true;
 noiseErosionTexture.generateMipmaps = true;
 noiseErosionTexture.wrapS = noiseErosionTexture.wrapT = noiseErosionTexture.wrapR= THREE.RepeatWrapping;
 
-console.log(noiseShapeTexture)
 
 const sunPosition = new THREE.Vector3();
 let sunPitch = 2
@@ -473,14 +472,12 @@ const theta = THREE.MathUtils.degToRad( 180 );
 
 sunPosition.setFromSphericalCoords( 1, phi, theta );
 
-
-
 const uniforms = {
 	invView: { value: camera.matrixWorldInverse.invert() },
 	invProj: { value: camera.projectionMatrixInverse  },
 	camera: { value: camera.position },
 	time: { value: clock.getElapsedTime() },
-	resolution: { value: new THREE.Vector2(width, height) },
+	resolution: { value: new THREE.Vector2(width*2, height*2) },
 	sunIntensity: { value: 0.6 },
 	sunPosition: { value: sunPosition },
 	coverage: { value: 0.3 },
