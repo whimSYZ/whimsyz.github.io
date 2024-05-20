@@ -471,12 +471,16 @@ noiseShapeTexture.minFilter = THREE.LinearMipmapLinearFilter;
 noiseShapeTexture.magFilter = THREE.LinearFilter;
 noiseShapeTexture.needsUpdate = true;
 noiseShapeTexture.generateMipmaps = true;
+noiseShapeTexture.wrapS = noiseShapeTexture.wrapT = noiseShapeTexture.wrapR = THREE.RepeatWrapping;
+noiseShapeTexture.repeat.set( 5, 5 );
 
 const noiseErosionTexture = new THREE.Data3DTexture( noiseErosion.image.data, 32, 32, 32 );
 noiseErosionTexture.minFilter = THREE.LinearMipmapLinearFilter;
 noiseErosionTexture.magFilter = THREE.LinearFilter;
 noiseErosionTexture.needsUpdate = true;
 noiseErosionTexture.generateMipmaps = true;
+noiseErosionTexture.wrapS = noiseErosionTexture.wrapT = noiseErosionTexture.wrapR= THREE.RepeatWrapping;
+noiseErosionTexture.repeat.set( 5,5 );
 
 console.log(noiseShapeTexture)
 
@@ -487,7 +491,7 @@ const theta = THREE.MathUtils.degToRad( 180 );
 sunPosition.setFromSphericalCoords( 1, phi, theta );
 
 const uniforms = {
-	"invView": { value: camera.matrixWorldInverse },
+	"invView": { value: camera.matrixWorldInverse.invert() },
 	"invProj": { value: camera.projectionMatrixInverse  },
 	"camera": { value: camera.position },
 	"time": { value: clock.getElapsedTime() },
