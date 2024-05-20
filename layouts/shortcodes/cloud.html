@@ -321,20 +321,13 @@ void main() {
 		float cloudDensity(vec3 p, const float LOD) {
 			float heightFraction = GetHeightFractionForPoint(p);
 		
-			p += 1000.0*snoise(p*0.0003);
+			//p += 1000.0*snoise(p*0.0003);
 		
 			vec4 lowFrequencyNoises = textureLod(perlworl, p*0.000005, LOD);
 			float lowFrequencyFBM = lowFrequencyNoises.g * 0.625 + lowFrequencyNoises.b * 0.25 + lowFrequencyNoises.a * 0.125;
-
-			return clamp(snoise(p*0.00005)/10.0, 0.0, 1.0);
 			
 			vec3 highFrequencyNoises = texture(worl, p*0.003, LOD).rgb;
 			float highFrequencyFBM = highFrequencyNoises.r * 0.625 + highFrequencyNoises.g * 0.25 + highFrequencyNoises.b * 0.125;
-
-			/*if (lowFrequencyFBM <= 1.0){
-				return 1.0;
-			}*/
-			
 		
 			float baseCloud = remap(lowFrequencyNoises.r, -(1.0 - lowFrequencyFBM), 1.0, 0.0, 1.0);
 		
@@ -386,9 +379,9 @@ void main() {
 					vec3 ambientLightColorComponent = ambientLightColor * 0.7;
 					vec3 sunColorComponent = GetHeightFractionForPoint(p) *  pow(sunColor, vec3(sunIntensity));		
 					vec3 cloudColor = ambientLightColorComponent + vec3(1.0) * sunColorComponent * lightEnergy;
-		
+					
 					cloudColor -= clamp(costheta, 0.0, vSunDirection.y*2.0);
-		
+					
 					resultColor += (1.0 - alpha) * cloudColor * density;
 					
 					alpha += (1.0 - alpha) * density;
@@ -442,50 +435,50 @@ void main() {
 		}
 		`;
 
-		const size = 128;
-		const data = new Uint8Array( size * size * size );
-
-
-let i = 0;
-				const scale = 0.05;
-				const perlin = new ImprovedNoise();
-				const vector3 = new THREE.Vector3();
-
-				for ( let z = 0; z < size; z ++ ) {
-
-					for ( let y = 0; y < size; y ++ ) {
-
-						for ( let x = 0; x < size; x ++ ) {
-
-							const d = 1.0 - vector3.set( x, y, z ).subScalar( size / 2 ).divideScalar( size ).length();
-							data[ i ] = ( 128 + 128 * perlin.noise( x * scale / 1.5, y * scale, z * scale / 1.5 ) ) * d * d;
-							i ++;
-
-						}
-
-					}
-
-				}
-
-				const texture = new THREE.Data3DTexture( data, size, size, size );
-				texture.format = THREE.RedFormat;
-				texture.minFilter = THREE.LinearFilter;
-				texture.magFilter = THREE.LinearFilter;
-				texture.unpackAlignment = 1;
-				texture.needsUpdate = true;
-
 
 const loader = new TGALoader();
 
 // load a resource
-const noiseErosion = loader.load(
-	'/noiseErosion.tga'
-)
+function getImageData(data, size){
+	for ( let z = 0; z < size; z ++ ) {
 
-const noiseShape = loader.load(
+		for ( let y = 0; y < size; y ++ ) {
+
+			for ( let x = 0; x < size; x ++ ) {
+
+				const d = 1.0 - vector.set( x, y, z ).subScalar( size / 2 ).divideScalar( size ).length();
+				data[ i ] = ( 128 + 128 * perlin.noise( x * scale / 1.5, y * scale, z * scale / 1.5 ) ) * d * d;
+				i ++;
+
+			}
+
+		}
+
+	}
+}
+
+const noiseShape = await loader.loadAsync(
 	'/noiseShape.tga'
 )
 
+const noiseErosion = await loader.loadAsync(
+	'/noiseErosion.tga'
+)
+
+
+const noiseShapeTexture = new THREE.Data3DTexture( noiseShape.image.data, 128, 128, 128 );
+noiseShapeTexture.minFilter = THREE.LinearMipmapLinearFilter;
+noiseShapeTexture.magFilter = THREE.LinearFilter;
+noiseShapeTexture.needsUpdate = true;
+noiseShapeTexture.generateMipmaps = true;
+
+const noiseErosionTexture = new THREE.Data3DTexture( noiseErosion.image.data, 32, 32, 32 );
+noiseErosionTexture.minFilter = THREE.LinearMipmapLinearFilter;
+noiseErosionTexture.magFilter = THREE.LinearFilter;
+noiseErosionTexture.needsUpdate = true;
+noiseErosionTexture.generateMipmaps = true;
+
+console.log(noiseShapeTexture)
 
 const sunPosition = new THREE.Vector3();
 const phi = THREE.MathUtils.degToRad( 90-2 );
@@ -494,26 +487,26 @@ const theta = THREE.MathUtils.degToRad( 180 );
 sunPosition.setFromSphericalCoords( 1, phi, theta );
 
 const uniforms = {
-"invView": { value: camera.matrixWorldInverse },
-"invProj": { value: camera.projectionMatrixInverse  },
-"camera": { value: camera.position },
-"time": { value: clock.getElapsedTime() },
-"resolution": { value: new THREE.Vector2(width, height) },
-"sunIntensity": { value: 0.6 },
-"sunPosition": { value: sunPosition },
-"coverage": { value: 0.3 },
-"cloudType": { value: 1.0 },
-"anvilBias": { value: 0.1 },
-"toneMapperEyeExposure": { value: 0.8 },
-"eccentricity": { value: 0.5 },
-"silver_intensity": { value: 0.15 },
-"silver_spread": { value: 0.5 },
-"earthRadius": { value:  500000.0},
-"cloudStartRadius": { value: 520000.0},
-"cloudEndRadius": { value: 530000.0},
-"toneMapperColor": { value: new THREE.Vector3(1.0, 0.5, 1.0)},
-"perlworl": { value: noiseErosion },
- "worl": { value: noiseShape},
+	"invView": { value: camera.matrixWorldInverse },
+	"invProj": { value: camera.projectionMatrixInverse  },
+	"camera": { value: camera.position },
+	"time": { value: clock.getElapsedTime() },
+	"resolution": { value: new THREE.Vector2(width*2, height*2) },
+	"sunIntensity": { value: 0.6 },
+	"sunPosition": { value: sunPosition },
+	"coverage": { value: 0.3 },
+	"cloudType": { value: 1.0 },
+	"anvilBias": { value: 0.1 },
+	"toneMapperEyeExposure": { value: 0.8 },
+	"eccentricity": { value: 0.5 },
+	"silver_intensity": { value: 0.15 },
+	"silver_spread": { value: 0.5 },
+	"earthRadius": { value:  500000.0},
+	"cloudStartRadius": { value: 520000.0},
+	"cloudEndRadius": { value: 530000.0},
+	"toneMapperColor": { value: new THREE.Vector3(1.0, 0.5, 1.0)},
+	"perlworl": { value: noiseShapeTexture },
+	"worl": { value: noiseErosionTexture},
 }
 const material = new THREE.ShaderMaterial( {
 	glslVersion: THREE.GLSL3,
@@ -556,7 +549,7 @@ let moveRight = false;
 
 const velocity = 1000;
 
-const euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
+const euler = new THREE.Euler( 0, 0, 0, 'XZY' );
 const vector = new THREE.Vector3();
 
 let mouseDown = false
@@ -577,11 +570,10 @@ function onMouseMove( event ) {
 
 	euler.setFromQuaternion( camera.quaternion );
 
-	euler.y -= movementX * 0.002;
-	euler.x -= movementY * 0.002;
+	euler.y -= movementX / 500;
+	euler.x -= movementY / 500;
 
-	euler.x = Math.max( - Math.PI / 2, Math.min(Math.PI / 2, euler.x ) );
-
+	//euler.x = Math.max( - Math.PI / 2, Math.min(Math.PI / 2, euler.x ) );
 	camera.quaternion.setFromEuler( euler );
 }
 
@@ -641,10 +633,6 @@ const onKeyUp = function ( event ) {
 
 };
 
-function getDirection( v ) {
-	return v.set( 0, 0, - 1 ).applyQuaternion( camera.quaternion );
-}
-
 
 window.addEventListener( "mousedown", onMouseDown, false );
 window.addEventListener( "mouseup", onMouseUp, false );
@@ -655,7 +643,9 @@ window.addEventListener( 'keyup', onKeyUp );
 
 
 const onMoveForward = function (distance) {
-	vector.copy(getDirection(vector));
+	vector.setFromMatrixColumn( camera.matrix, 0 );
+
+	vector.crossVectors( camera.up, vector );
 
 	camera.position.addScaledVector(vector, distance);
 }
