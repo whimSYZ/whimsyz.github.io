@@ -323,10 +323,11 @@ void main() {
 			float heightFraction = GetHeightFractionForPoint(p);
 		
 			p += 1000.0*snoise(p*0.0003);
-			vec4 lowFrequencyNoises = textureLod(perlworl, p*0.000005, LOD);
+			vec3 sampleCord = (p+time*500.0);
+			vec4 lowFrequencyNoises = textureLod(perlworl, sampleCord*0.000005, LOD);
 			float lowFrequencyFBM = lowFrequencyNoises.g * 0.625 + lowFrequencyNoises.b * 0.25 + lowFrequencyNoises.a * 0.125;
 			
-			vec3 highFrequencyNoises = texture(worl, p*0.003, LOD).rgb;
+			vec3 highFrequencyNoises = texture(worl, sampleCord*0.003, LOD).rgb;
 			float highFrequencyFBM = highFrequencyNoises.r * 0.625 + highFrequencyNoises.g * 0.25 + highFrequencyNoises.b * 0.125;
 		
 			float baseCloud = remap(lowFrequencyNoises.r, -(1.0 - lowFrequencyFBM), 1.0, 0.0, 1.0);
@@ -470,6 +471,8 @@ const phi = THREE.MathUtils.degToRad( 90-sunPitch );
 const theta = THREE.MathUtils.degToRad( 180 );
 
 sunPosition.setFromSphericalCoords( 1, phi, theta );
+
+
 
 const uniforms = {
 	invView: { value: camera.matrixWorldInverse.invert() },
@@ -696,6 +699,7 @@ const onMoveRight = function (distance) {
 
 function animate() {
 	requestAnimationFrame( animate );
+	uniforms.time.value = clock.getElapsedTime()
 	
 	if ( moveForward ) onMoveForward( velocity );
 	if ( moveBackward ) onMoveForward( -velocity );
