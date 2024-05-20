@@ -24,6 +24,7 @@ import * as THREE from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js';
 import { TGALoader } from 'three/addons/loaders/TGALoader.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 	
 const width = window.innerWidth/2, height = window.innerHeight/2;
 
@@ -321,8 +322,7 @@ void main() {
 		float cloudDensity(vec3 p, const float LOD) {
 			float heightFraction = GetHeightFractionForPoint(p);
 		
-			//p += 1000.0*snoise(p*0.0003);
-		
+			p += 1000.0*snoise(p*0.0003);
 			vec4 lowFrequencyNoises = textureLod(perlworl, p*0.000005, LOD);
 			float lowFrequencyFBM = lowFrequencyNoises.g * 0.625 + lowFrequencyNoises.b * 0.25 + lowFrequencyNoises.a * 0.125;
 			
@@ -439,23 +439,6 @@ void main() {
 const loader = new TGALoader();
 
 // load a resource
-function getImageData(data, size){
-	for ( let z = 0; z < size; z ++ ) {
-
-		for ( let y = 0; y < size; y ++ ) {
-
-			for ( let x = 0; x < size; x ++ ) {
-
-				const d = 1.0 - vector.set( x, y, z ).subScalar( size / 2 ).divideScalar( size ).length();
-				data[ i ] = ( 128 + 128 * perlin.noise( x * scale / 1.5, y * scale, z * scale / 1.5 ) ) * d * d;
-				i ++;
-
-			}
-
-		}
-
-	}
-}
 
 const noiseShape = await loader.loadAsync(
 	'/noiseShape.tga'
@@ -465,14 +448,12 @@ const noiseErosion = await loader.loadAsync(
 	'/noiseErosion.tga'
 )
 
-
 const noiseShapeTexture = new THREE.Data3DTexture( noiseShape.image.data, 128, 128, 128 );
 noiseShapeTexture.minFilter = THREE.LinearMipmapLinearFilter;
 noiseShapeTexture.magFilter = THREE.LinearFilter;
 noiseShapeTexture.needsUpdate = true;
 noiseShapeTexture.generateMipmaps = true;
 noiseShapeTexture.wrapS = noiseShapeTexture.wrapT = noiseShapeTexture.wrapR = THREE.RepeatWrapping;
-noiseShapeTexture.repeat.set( 5, 5 );
 
 const noiseErosionTexture = new THREE.Data3DTexture( noiseErosion.image.data, 32, 32, 32 );
 noiseErosionTexture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -480,37 +461,37 @@ noiseErosionTexture.magFilter = THREE.LinearFilter;
 noiseErosionTexture.needsUpdate = true;
 noiseErosionTexture.generateMipmaps = true;
 noiseErosionTexture.wrapS = noiseErosionTexture.wrapT = noiseErosionTexture.wrapR= THREE.RepeatWrapping;
-noiseErosionTexture.repeat.set( 5,5 );
 
 console.log(noiseShapeTexture)
 
 const sunPosition = new THREE.Vector3();
-const phi = THREE.MathUtils.degToRad( 90-2 );
+let sunPitch = 2
+const phi = THREE.MathUtils.degToRad( 90-sunPitch );
 const theta = THREE.MathUtils.degToRad( 180 );
 
 sunPosition.setFromSphericalCoords( 1, phi, theta );
 
 const uniforms = {
-	"invView": { value: camera.matrixWorldInverse.invert() },
-	"invProj": { value: camera.projectionMatrixInverse  },
-	"camera": { value: camera.position },
-	"time": { value: clock.getElapsedTime() },
-	"resolution": { value: new THREE.Vector2(width*2, height*2) },
-	"sunIntensity": { value: 0.6 },
-	"sunPosition": { value: sunPosition },
-	"coverage": { value: 0.3 },
-	"cloudType": { value: 1.0 },
-	"anvilBias": { value: 0.1 },
-	"toneMapperEyeExposure": { value: 0.8 },
-	"eccentricity": { value: 0.5 },
-	"silver_intensity": { value: 0.15 },
-	"silver_spread": { value: 0.5 },
-	"earthRadius": { value:  500000.0},
-	"cloudStartRadius": { value: 520000.0},
-	"cloudEndRadius": { value: 530000.0},
-	"toneMapperColor": { value: new THREE.Vector3(1.0, 0.5, 1.0)},
-	"perlworl": { value: noiseShapeTexture },
-	"worl": { value: noiseErosionTexture},
+	invView: { value: camera.matrixWorldInverse.invert() },
+	invProj: { value: camera.projectionMatrixInverse  },
+	camera: { value: camera.position },
+	time: { value: clock.getElapsedTime() },
+	resolution: { value: new THREE.Vector2(width, height) },
+	sunIntensity: { value: 0.6 },
+	sunPosition: { value: sunPosition },
+	coverage: { value: 0.3 },
+	cloudType: { value: 1.0 },
+	anvilBias: { value: 0.1 },
+	toneMapperEyeExposure: { value: 0.8 },
+	eccentricity: { value: 0.5 },
+	silver_intensity: { value: 0.15 },
+	silver_spread: { value: 0.5 },
+	earthRadius: { value:  500000.0},
+	cloudStartRadius: { value: 520000.0},
+	cloudEndRadius: { value: 530000.0},
+	toneMapperColor: { value: new THREE.Vector3(1.0, 0.5, 1.0)},
+	perlworl: { value: noiseShapeTexture },
+	worl: { value: noiseErosionTexture},
 }
 const material = new THREE.ShaderMaterial( {
 	glslVersion: THREE.GLSL3,
@@ -535,7 +516,58 @@ renderer.toneMappingExposure = 0.5;
 
 cloud.appendChild( renderer.domElement );
 
+// controls
 window.addEventListener( 'resize', onWindowResize );
+
+let guiParams = {
+	sunIntensity: 0.6 ,
+	sunPitch: 5,
+	coverage: 0.3,
+	cloudType: 1.0 ,
+	anvilBias: 0.1 ,
+	toneMapperEyeExposure:0.8 ,
+	eccentricity:0.5 ,
+	silver_intensity: 0.15 ,
+	silver_spread: 0.5 ,
+	earthRadius: 500000.0,
+	cloudStartRadius: 520000.0,
+	cloudEndRadius:530000.0,
+}
+
+function update() {
+	uniforms.sunIntensity.value = guiParams.sunIntensity
+
+	sunPitch = guiParams.sunPitch
+	const phi = THREE.MathUtils.degToRad( 90-sunPitch );
+	const theta = THREE.MathUtils.degToRad( 180 );
+	sunPosition.setFromSphericalCoords( 1, phi, theta );
+	uniforms.sunPosition.value = sunPosition
+
+	uniforms.coverage.value = guiParams.coverage
+	uniforms.cloudType.value = guiParams.cloudType
+	uniforms.anvilBias.value = guiParams.anvilBias
+	uniforms.toneMapperEyeExposure.value = guiParams.toneMapperEyeExposure
+	uniforms.eccentricity.value = guiParams.eccentricity
+	uniforms.silver_intensity.value = guiParams.silver_intensity
+	uniforms.silver_spread.value = guiParams.silver_spread
+	uniforms.earthRadius.value = guiParams.earthRadius
+	uniforms.cloudStartRadius.value = guiParams.cloudStartRadius
+	uniforms.cloudEndRadius.value = guiParams.cloudEndRadius
+}
+
+const gui = new GUI();
+gui.add( guiParams, 'sunIntensity', 0, 1, 0.01 ).onChange( update );
+gui.add( guiParams, 'sunPitch', 0, 180, 1 ).onChange( update );
+gui.add( guiParams, 'coverage', 0, 1, 0.01 ).onChange( update );
+gui.add( guiParams, 'cloudType', 0, 1, 0.01 ).onChange( update );
+gui.add( guiParams, 'anvilBias', 0, 1, 0.01 ).onChange( update );
+gui.add( guiParams, 'toneMapperEyeExposure', 0, 1, 0.01 ).onChange( update );
+gui.add( guiParams, 'eccentricity', 0, 1, 0.01 ).onChange( update );
+gui.add( guiParams, 'silver_intensity', 0, 1, 0.01).onChange( update );
+gui.add( guiParams, 'silver_spread', 0, 1, 0.01 ).onChange( update );
+gui.add( guiParams, 'earthRadius', 100000, 1000000, 10000 ).onChange( update );
+gui.add( guiParams, 'cloudStartRadius', 100000, 1000000, 10000 ).onChange( update );
+gui.add( guiParams, 'cloudEndRadius', 100000, 1000000, 10000 ).onChange( update );
 
 function onWindowResize() {
 
