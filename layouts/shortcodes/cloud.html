@@ -466,7 +466,7 @@ noiseErosionTexture.wrapS = noiseErosionTexture.wrapT = noiseErosionTexture.wrap
 
 
 const sunPosition = new THREE.Vector3();
-let sunPitch = 2
+let sunPitch = 60
 const phi = THREE.MathUtils.degToRad( 90-sunPitch );
 const theta = THREE.MathUtils.degToRad( 180 );
 
@@ -519,7 +519,7 @@ window.addEventListener( 'resize', onWindowResize );
 
 let guiParams = {
 	sunIntensity: 0.6 ,
-	sunPitch: 5,
+	sunPitch: 60,
 	coverage: 0.3,
 	cloudType: 1.0 ,
 	anvilBias: 0.1 ,
