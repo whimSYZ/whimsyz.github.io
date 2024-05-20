@@ -594,15 +594,15 @@ const vector = new THREE.Vector3();
 
 let mouseDown = false
 
-function onMouseDown( event ) {
+function onPointerDown( event ) {
 	mouseDown = true
 }
 
-function onMouseUp( event ) {
+function onPointerUp( event ) {
 	mouseDown = false
 }
 
-function onMouseMove( event ) {
+function onPointerMove( event ) {
 	if ( mouseDown === false ) return;
 
 	const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
@@ -674,9 +674,9 @@ const onKeyUp = function ( event ) {
 };
 
 
-window.addEventListener( "mousedown", onMouseDown, false );
-window.addEventListener( "mouseup", onMouseUp, false );
-window.addEventListener( "mousemove", onMouseMove, false );
+window.addEventListener( "pointerdown", onPointerDown, false );
+window.addEventListener( "pointerup", onPointerUp, false );
+window.addEventListener( "pointermove", onPointerMove, false );
 
 window.addEventListener( 'keydown', onKeyDown );
 window.addEventListener( 'keyup', onKeyUp );
