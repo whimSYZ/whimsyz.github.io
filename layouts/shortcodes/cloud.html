@@ -323,7 +323,7 @@ void main() {
 			float heightFraction = GetHeightFractionForPoint(p);
 		
 			p += 1000.0*snoise(p*0.0003);
-			vec3 sampleCord = (p+time*500.0);
+			vec3 sampleCord = (p+time*300.0);
 			vec4 lowFrequencyNoises = textureLod(perlworl, sampleCord*0.000005, LOD);
 			float lowFrequencyFBM = lowFrequencyNoises.g * 0.625 + lowFrequencyNoises.b * 0.25 + lowFrequencyNoises.a * 0.125;
 			
@@ -388,6 +388,7 @@ void main() {
 					alpha += (1.0 - alpha) * density;
 		
 					if (alpha > 0.99){
+						alpha = 1.0;
 						break;
 					}
 				}
