@@ -511,9 +511,6 @@ scene.add( mesh );
 
 const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( width, height );
-renderer.setPixelRatio( window.devicePixelRatio );
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 0.5;
 
 cloud.appendChild( renderer.domElement );
 
