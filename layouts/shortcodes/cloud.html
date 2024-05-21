@@ -397,7 +397,7 @@ void main() {
 					
 					for (int j = 0; j < 6; j++){
 						lightPos += (lightDir + length(lightDir) * RANDOM_VECTORS[j]*  float(j));
-						scatterDensity += cloudDensity(lightPos, float(j+1));
+						scatterDensity += cloudDensity(lightPos, float(j));
 					}
 		
 					lightPos += lightDir * length(lightDir);
