@@ -2,8 +2,7 @@
 
 <style>
 	.cloud {
-		display: flex;
-		position: absolute;
+		display: block;
 		margin: auto;
 	}
 </style>
@@ -25,14 +24,18 @@ import { Sky } from 'three/addons/objects/Sky.js';
 import { ImprovedNoise } from 'three/addons/math/ImprovedNoise.js';
 import { TGALoader } from 'three/addons/loaders/TGALoader.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-	
-const width = window.innerWidth/2, height = window.innerHeight/2;
 
-const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 100, 2000000 );
+const cloud = document.querySelector('.cloud');
+
+const aspectRatio = window.innerWidth / window.innerHeight
+
+const width = cloud.parentElement.clientWidth, height = width /aspectRatio;
+
+const camera = new THREE.PerspectiveCamera( 60, aspectRatio, 100, 2000000 );
 camera.position.set( 0, 100, 2000 );
 
 const scene = new THREE.Scene();
-const cloud = document.querySelector('.cloud');
+
 
 const geometry = new THREE.BoxGeometry( 2, 2, 2 );
 
@@ -319,6 +322,33 @@ void main() {
 			return result;
 		}
 		
+		/* attempted change on May 21, 2024
+		float cloudDensity(vec3 p, const float LOD) {
+			float heightFraction = GetHeightFractionForPoint(p);
+		
+			p += 1000.0*snoise(p*0.0003);
+			vec3 sampleCord = (p+time*300.0);
+			vec4 lowFrequencyNoises = textureLod(perlworl, sampleCord*0.000005, LOD);
+			float lowFrequencyFBM = lowFrequencyNoises.g * 0.625 + lowFrequencyNoises.b * 0.25 + lowFrequencyNoises.a * 0.125;
+			
+			vec3 highFrequencyNoises = texture(worl, sampleCord*0.003, LOD).rgb;
+			float highFrequencyFBM = highFrequencyNoises.r * 0.625 + highFrequencyNoises.g * 0.25 + highFrequencyNoises.b * 0.125;
+		
+			float baseCloud = remap(lowFrequencyNoises.r, -(1.0 - lowFrequencyFBM), 1.0, 0.0, 1.0);
+		
+			baseCloud = remap(lowFrequencyFBM, highFrequencyFBM, 1.0, 0.0, 1.0);
+		
+			float grad = densityHeightGradient(heightFraction, cloudType);
+
+			float coverageCloud = remap(baseCloud*grad, 1.0 - coverage, 1.0, 0.0, 1.0);
+			coverageCloud *= coverage;
+
+			coverageCloud = pow(coverageCloud, remap(heightFraction, 0.7, 0.8, 1.0, mix(1.0, 0.5, anvilBias)));
+			return clamp(coverageCloud, 0.0, 1.0);
+		
+		}
+		*/
+
 		float cloudDensity(vec3 p, const float LOD) {
 			float heightFraction = GetHeightFractionForPoint(p);
 		
@@ -367,7 +397,7 @@ void main() {
 					
 					for (int j = 0; j < 6; j++){
 						lightPos += (lightDir + length(lightDir) * RANDOM_VECTORS[j]*  float(j));
-						scatterDensity += cloudDensity(lightPos, float(j));
+						scatterDensity += cloudDensity(lightPos, float(j+1));
 					}
 		
 					lightPos += lightDir * length(lightDir);
@@ -382,7 +412,7 @@ void main() {
 					vec3 cloudColor = ambientLightColorComponent + vec3(1.0) * sunColorComponent * lightEnergy;
 					
 					cloudColor -= clamp(costheta, 0.0, vSunDirection.y*2.0);
-					
+
 					resultColor += (1.0 - alpha) * cloudColor * density;
 					
 					alpha += (1.0 - alpha) * density;
@@ -557,19 +587,19 @@ const gui = new GUI();
 gui.add( guiParams, 'sunIntensity', 0, 1, 0.01 ).onChange( update );
 gui.add( guiParams, 'sunPitch', 0, 180, 1 ).onChange( update );
 gui.add( guiParams, 'coverage', 0, 1, 0.01 ).onChange( update );
-gui.add( guiParams, 'cloudType', 0, 1, 0.01 ).onChange( update );
+gui.add( guiParams, 'cloudType', 0, 1.5, 0.01 ).onChange( update );
 gui.add( guiParams, 'anvilBias', 0, 1, 0.01 ).onChange( update );
 gui.add( guiParams, 'toneMapperEyeExposure', 0, 1, 0.01 ).onChange( update );
 gui.add( guiParams, 'eccentricity', 0, 1, 0.01 ).onChange( update );
 gui.add( guiParams, 'silver_intensity', 0, 1, 0.01).onChange( update );
 gui.add( guiParams, 'silver_spread', 0, 1, 0.01 ).onChange( update );
-gui.add( guiParams, 'earthRadius', 100000, 1000000, 10000 ).onChange( update );
-gui.add( guiParams, 'cloudStartRadius', 100000, 1000000, 10000 ).onChange( update );
-gui.add( guiParams, 'cloudEndRadius', 100000, 1000000, 10000 ).onChange( update );
+gui.add( guiParams, 'earthRadius', 100000, 1000000, 5000 ).onChange( update );
+gui.add( guiParams, 'cloudStartRadius', 100000, 1000000, 5000 ).onChange( update );
+gui.add( guiParams, 'cloudEndRadius', 100000, 1000000, 5000 ).onChange( update );
 
 function onWindowResize() {
 
-	camera.aspect = width / height;
+	camera.aspect = aspectRatio;
 	camera.updateProjectionMatrix();
 
 	renderer.setSize( width, height );
@@ -675,19 +705,22 @@ window.addEventListener( "pointermove", onPointerMove, false );
 window.addEventListener( 'keydown', onKeyDown );
 window.addEventListener( 'keyup', onKeyUp );
 
+const dir = new THREE.Vector3();
 
 const onMoveForward = function (distance) {
-	vector.setFromMatrixColumn( camera.matrix, 0 );
+	camera.getWorldDirection(dir)
+	camera.position.addScaledVector(dir, distance);
 
-	vector.crossVectors( camera.up, vector );
-
-	camera.position.addScaledVector(vector, distance);
+	if (camera.position.y < 0){
+		camera.position.y = 0
+	}else if (camera.position.y > uniforms.cloudStartRadius ){
+		camera.position.y = uniforms.cloudStartRadius
+	}
 }
 
 const onMoveRight = function (distance) {
 	vector.setFromMatrixColumn( camera.matrix, 0 );
-
-		camera.position.addScaledVector( vector, distance );
+	camera.position.addScaledVector( vector, distance );
 }
 
 
