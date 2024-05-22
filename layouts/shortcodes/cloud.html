@@ -31,8 +31,6 @@ const aspectRatio = window.innerWidth / window.innerHeight
 
 const width = cloud.parentElement.clientWidth, height = width /aspectRatio;
 
-const brct = cloud.getBoundingClientRect()
-
 const camera = new THREE.PerspectiveCamera( 60, aspectRatio, 100, 2000000 );
 camera.position.set( 0, 100, 2000 );
 
@@ -619,6 +617,8 @@ const vector = new THREE.Vector3();
 
 let mouseDown = false
 
+const brct = cloud.getBoundingClientRect()
+
 function onPointerDown( event ) {
 	mouseDown = true
 }
@@ -628,7 +628,6 @@ function onTouchMove(event) {
 		event.preventDefault()
 	}
 }
-	
 
 function onPointerUp( event ) {
 	mouseDown = false

@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Demo on Yuanzhe Shi</title>
-    <link>https://yuanzheshi.com/tags/demo/</link>
+    <link>http://localhost:1313/tags/demo/</link>
     <description>Recent content in Demo on Yuanzhe Shi</description>
     <generator>Hugo -- 0.126.1</generator>
     <language>en</language>
     <lastBuildDate>Wed, 08 May 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://yuanzheshi.com/tags/demo/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/demo/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Gallery</title>
-      <link>https://yuanzheshi.com/gallery/</link>
+      <link>http://localhost:1313/gallery/</link>
       <pubDate>Wed, 08 May 2024 00:00:00 +0000</pubDate>
-      <guid>https://yuanzheshi.com/gallery/</guid>
+      <guid>http://localhost:1313/gallery/</guid>
       <description> Silhouette dance 十一月秋 2022nd Light cicada and summer White bird and sea Star blindfold Dream origami Eyes of mine Acrylic marker works Sun and summer University ave@philips Cloud blue Ballet of spring Bubbles Drown “隔了好久，我想看看海” End of day Frozen planet End of summer Christmas 2021 2021 12 22 Death of that girl 云出盈月将照我 正解世界 God of betrayal Cold cup warm sun 内脏间隙 21st birthday Macaw and you kiss me in order Apollo and dephne Sea Red spider lily in eyes 1 Cold rose Ningbo impression Journey 太陽みたいなキミが大好きだ Me 2021 Breaking time 等火山喷发的小星球 春暖花开去见你 Sick astronut in love Astronut in water Astronut Tree in gloom Red Little match girl Chrismas 2020 Me 2020 Water sadness 20th birthday Shanghai 2020 Caramel star July dream Life Kunqu color Kunqu Spring Waterloo spring Waterloo winter Crowd Sky Moon 1 青春之旅 Christmas 2019 Mobius strip Waterloo nights 心魔 芽 Waterloo sky 湛蓝瞳眸 Flamingo Fall 初秋 19th birthday 再见 Plants Summer 2019 4 Summer 2019 3 Summer 2019 2 Clouds Green light Another sky Bottle Summer 2019 1 Whale error Kubernetes The night before graduating Kitchener rain Hand 1 Mojito Christmas 2018 Our town poster 18th birthday Blue sky May 18, 2018 rainny May 17, 2018 sunny Gloom Hello 2018 Snowball ornament The dinning room Just fall Gear knight 3 d Death Picasso at the lapin agile Seven stories Untitled artwork 10 Untitled artwork 11 Untitled artwork 12 Untitled artwork 14 Untitled artwork 15 Untitled artwork 16 Untitled artwork 17 Untitled artwork 18 Untitled artwork 19 Untitled artwork 2 Untitled artwork 20 Untitled artwork 21 Untitled artwork 22 Untitled artwork 23 Untitled artwork 24 Untitled artwork 25 Untitled artwork 26 Untitled artwork 27 Untitled artwork 28 Untitled artwork 29 Untitled artwork 3 Untitled artwork 30 Untitled artwork 31 Untitled artwork 32 Untitled artwork 4 Untitled artwork 5 Untitled artwork 6 Untitled artwork 7 Untitled artwork 8 Untitled artwork 9 Untitled artwork copy Untitled artwork </description>
     </item>
   </channel>
