@@ -702,8 +702,8 @@ cloud.addEventListener( "pointerdown", onPointerDown, false );
 cloud.addEventListener( "pointerup", onPointerUp, false );
 cloud.addEventListener( "pointermove", onPointerMove, false );
 
-cloud.addEventListener( 'keydown', onKeyDown );
-cloud.addEventListener( 'keyup', onKeyUp );
+window.addEventListener( 'keydown', onKeyDown );
+window.addEventListener( 'keyup', onKeyUp );
 
 const dir = new THREE.Vector3();
 
