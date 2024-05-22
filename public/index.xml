@@ -4,54 +4,52 @@
     <title>Yuanzhe Shi</title>
     <link>https://yuanzheshi.com/</link>
     <description>Recent content on Yuanzhe Shi</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo -- 0.126.1</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 28 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://yuanzheshi.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 10 May 2024 20:20:04 -0500</lastBuildDate>
+    <atom:link href="https://yuanzheshi.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Cloud</title>
+      <link>https://yuanzheshi.com/cloud/</link>
+      <pubDate>Fri, 10 May 2024 20:20:04 -0500</pubDate>
+      <guid>https://yuanzheshi.com/cloud/</guid>
+      <description> ☁️ </description>
+    </item>
     <item>
       <title>Gallery</title>
       <link>https://yuanzheshi.com/gallery/</link>
-      <pubDate>Wed, 28 Apr 2021 00:00:00 +0000</pubDate>
-      
+      <pubDate>Wed, 08 May 2024 00:00:00 +0000</pubDate>
       <guid>https://yuanzheshi.com/gallery/</guid>
-      <description>.grid { position: block; height: 100% } .item-content { z-index: 1; position: block; width: 100%; height: 100%; overflow: hidden; margin-top: -16px; margin-bottom: -16px; } .item-content  img { display: block; border-radius: 6px; } .crop-image { left: -100%; right: -100%; top: -100%; bottom: -100%; object-fit: cover; } img{ transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out, filter 0.25s ease-in-out; } .item-content:hover img{ opacity: 0; transform: ; opacity: ; filter: ; } .</description>
+      <description> Silhouette dance 十一月秋 2022nd Light cicada and summer White bird and sea Star blindfold Dream origami Eyes of mine Acrylic marker works Sun and summer University ave@philips Cloud blue Ballet of spring Bubbles Drown “隔了好久，我想看看海” End of day Frozen planet End of summer Christmas 2021 2021 12 22 Death of that girl 云出盈月将照我 正解世界 God of betrayal Cold cup warm sun 内脏间隙 21st birthday Macaw and you kiss me in order Apollo and dephne Sea Red spider lily in eyes 1 Cold rose Ningbo impression Journey 太陽みたいなキミが大好きだ Me 2021 Breaking time 等火山喷发的小星球 春暖花开去见你 Sick astronut in love Astronut in water Astronut Tree in gloom Red Little match girl Chrismas 2020 Me 2020 Water sadness 20th birthday Shanghai 2020 Caramel star July dream Life Kunqu color Kunqu Spring Waterloo spring Waterloo winter Crowd Sky Moon 1 青春之旅 Christmas 2019 Mobius strip Waterloo nights 心魔 芽 Waterloo sky 湛蓝瞳眸 Flamingo Fall 初秋 19th birthday 再见 Plants Summer 2019 4 Summer 2019 3 Summer 2019 2 Clouds Green light Another sky Bottle Summer 2019 1 Whale error Kubernetes The night before graduating Kitchener rain Hand 1 Mojito Christmas 2018 Our town poster 18th birthday Blue sky May 18, 2018 rainny May 17, 2018 sunny Gloom Hello 2018 Snowball ornament The dinning room Just fall Gear knight 3 d Death Picasso at the lapin agile Seven stories Untitled artwork 10 Untitled artwork 11 Untitled artwork 12 Untitled artwork 14 Untitled artwork 15 Untitled artwork 16 Untitled artwork 17 Untitled artwork 18 Untitled artwork 19 Untitled artwork 2 Untitled artwork 20 Untitled artwork 21 Untitled artwork 22 Untitled artwork 23 Untitled artwork 24 Untitled artwork 25 Untitled artwork 26 Untitled artwork 27 Untitled artwork 28 Untitled artwork 29 Untitled artwork 3 Untitled artwork 30 Untitled artwork 31 Untitled artwork 32 Untitled artwork 4 Untitled artwork 5 Untitled artwork 6 Untitled artwork 7 Untitled artwork 8 Untitled artwork 9 Untitled artwork copy Untitled artwork </description>
     </item>
-    
     <item>
       <title>Hugo shortcode gallery</title>
       <link>https://yuanzheshi.com/posts/gallery/</link>
       <pubDate>Fri, 23 Apr 2021 01:48:41 +0800</pubDate>
-      
       <guid>https://yuanzheshi.com/posts/gallery/</guid>
       <description>Creating a gallery shortcode for hugo</description>
     </item>
-    
     <item>
       <title>First post</title>
       <link>https://yuanzheshi.com/posts/first-post/</link>
       <pubDate>Tue, 21 Jul 2020 00:22:22 +0800</pubDate>
-      
       <guid>https://yuanzheshi.com/posts/first-post/</guid>
       <description>This is my first post</description>
     </item>
-    
     <item>
       <title>About</title>
       <link>https://yuanzheshi.com/about/</link>
       <pubDate>Fri, 17 Jan 2020 20:20:04 -0500</pubDate>
-      
       <guid>https://yuanzheshi.com/about/</guid>
-      <description>I&amp;rsquo;m Yuanzhe Shi. A first year CS &amp;amp; CO student at University of Waterloo.
-I&amp;rsquo;m enthusiastic about computer science, visual arts, chemistry and business.</description>
+      <description>I&amp;rsquo;m 师远哲 Yuanzhe Shi. A fourth year CS &amp;amp; CO student at University of Waterloo.
+I&amp;rsquo;m enthusiastic about computer science, visual arts and chemistry.</description>
     </item>
-    
     <item>
       <title>Archive</title>
       <link>https://yuanzheshi.com/archive/</link>
       <pubDate>Fri, 17 Jan 2020 20:20:04 -0500</pubDate>
-      
       <guid>https://yuanzheshi.com/archive/</guid>
       <description>This is the archive for the stuff I have done.</description>
     </item>
-    
   </channel>
 </rss>

@@ -10,9 +10,7 @@
 <meta name="description" content="Creating a gallery shortcode for hugo">
 <meta name="author" content="Yuanzhe Shi">
 <link rel="canonical" href="https://yuanzheshi.com/posts/gallery/">
-<link crossorigin="anonymous" href="https://yuanzheshi.com/assets/css/stylesheet.78a14cf8249250820b49e9dc59e58b846a9beea6d16d50612c68b121ddf02146.css" integrity="sha256-eKFM&#43;CSSUIILSencWeWLhGqb7qbRbVBhLGixId3wIUY=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="https://yuanzheshi.com/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
+<link crossorigin="anonymous" href="https://yuanzheshi.com/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://yuanzheshi.com/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://yuanzheshi.com/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://yuanzheshi.com/favicon-32x32.png">
@@ -20,6 +18,7 @@
 <link rel="mask-icon" href="https://yuanzheshi.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://yuanzheshi.com/posts/gallery/">
 <noscript>
     <style>
         #theme-toggle,
@@ -37,7 +36,7 @@
                 --secondary: rgb(155, 156, 157);
                 --tertiary: rgb(65, 66, 68);
                 --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
+                --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
             }
@@ -56,7 +55,10 @@
         }
 
     </style>
-</noscript><meta property="og:title" content="Hugo shortcode gallery" />
+</noscript>
+  
+
+<meta property="og:title" content="Hugo shortcode gallery" />
 <meta property="og:description" content="Creating a gallery shortcode for hugo" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://yuanzheshi.com/posts/gallery/" /><meta property="article:section" content="posts" />
@@ -72,16 +74,16 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
     {
       "@type": "ListItem",
-      "position":  2 ,
+      "position":  1 ,
       "name": "Posts",
       "item": "https://yuanzheshi.com/posts/"
     }, 
     {
       "@type": "ListItem",
-      "position":  3 ,
+      "position":  2 ,
       "name": "Hugo shortcode gallery",
       "item": "https://yuanzheshi.com/posts/gallery/"
     }
@@ -98,7 +100,7 @@
   "keywords": [
     "css", "html", "hugo"
   ],
-  "articleBody": "Apr. 18, 2021 Despite the pain during the term, it always feels empty after finishing all the finals. So I decided to work on this little project that I have planned for a long time - a gallery shortcode in hugo. My gallery before was simply cropping the images as squares and stacking them up to four columns. Athough it can fulfill the basic needs, there are several pain points:\n The thumbnail is not configured correctly, so the gallery uses the real images as thumbnails, which slows down the loading speed and My works are done in many different dimensions, and cropping them can cut away some information. The method of simply stacking square images can be aesthetically improved The images are not sort by time(instead they are sorted by file names), which means some of my oldest works got placed at the front  While the above issue can be addressed by finding and implementing existing short codes such as hugo-shortcode-gallery and hugo-easy-gallery, they are less customizable and have limitations(for example, neither support “sort by time”). Additionally, it is a lot more fun to create one on my own, especially to the purpose of passing the boring spring in Taiyuan :)\nSo let’s start by listing some criteria that I want the gallery to achieve.\n Lazy loading and thumbnails Grid layout Lightbox Sort by time(and presumably other ways) Description of images Portfolio to group related images  Looks like a lot of todos…but that’s it for today, I need to go to sleep now. zZ\nApr. 20, 2021 Apr. 21 I tried to do the sorting trick. We can access the image’s modified time using EXIF data. However, we I tried to do the following:\n{{ range sort $images .Exif }} ... {{ end }} It returns the following error:\nERROR executing \"shortcodes/gallery.html\" at : can't evaluate field Exif in type resource.Resources Seems like hugo can’t recognize some image. The problem persists when I delete all but one images with the name “whale.jpg”. However, accessing .Exif after we do {{ if eq .ResourceType \"image\" }} seems ok, so there must be some object in $images that are not image. But we used {{ $images := .Page.Resources.ByType \"image\" }} to get images!\nApr. 23 Today I have mainly worked on the hover effects and sorting.\n",
+  "articleBody": "Apr. 18, 2021 Despite the pain during the term, it always feels empty after finishing all the finals. So I decided to work on this little project that I have planned for a long time - a gallery shortcode in hugo. My gallery before was simply cropping the images as squares and stacking them up to four columns. Athough it can fulfill the basic needs, there are several pain points:\nThe thumbnail is not configured correctly, so the gallery uses the real images as thumbnails, which slows down the loading speed and My works are done in many different dimensions, and cropping them can cut away some information. The method of simply stacking square images can be aesthetically improved The images are not sort by time(instead they are sorted by file names), which means some of my oldest works got placed at the front While the above issue can be addressed by finding and implementing existing short codes such as hugo-shortcode-gallery and hugo-easy-gallery, they are less customizable and have limitations(for example, neither support “sort by time”). Additionally, it is a lot more fun to create one on my own, especially to the purpose of passing the boring spring in Taiyuan :)\nSo let’s start by listing some criteria that I want the gallery to achieve.\nLazy loading and thumbnails Grid layout Lightbox Sort by time(and presumably other ways) Description of images Portfolio to group related images Looks like a lot of todos…but that’s it for today, I need to go to sleep now. zZ\nApr. 20, 2021 Apr. 21 I tried to do the sorting trick. We can access the image’s modified time using EXIF data. However, we I tried to do the following:\n{{ range sort $images .Exif }} ... {{ end }} It returns the following error:\nERROR executing \"shortcodes/gallery.html\" at \u003c.Exif\u003e: can't evaluate field Exif in type resource.Resources Seems like hugo can’t recognize some image. The problem persists when I delete all but one images with the name “whale.jpg”. However, accessing .Exif after we do {{ if eq .ResourceType \"image\" }} seems ok, so there must be some object in $images that are not image. But we used {{ $images := .Page.Resources.ByType \"image\" }} to get images!\nApr. 23 Today I have mainly worked on the hover effects and sorting.\n",
   "wordCount" : "383",
   "inLanguage": "en",
   "datePublished": "2021-04-23T01:48:41+08:00",
@@ -138,7 +140,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://yuanzheshi.com" accesskey="h" title="Yuanzhe Shi (Alt + H)">Yuanzhe Shi</a>
+            <a href="https://yuanzheshi.com/" accesskey="h" title="Yuanzhe Shi (Alt + H)">Yuanzhe Shi</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -174,12 +176,17 @@
                 </a>
             </li>
             <li>
+                <a href="https://yuanzheshi.com/cloud/" title="☁️">
+                    <span>☁️</span>
+                </a>
+            </li>
+            <li>
                 <a href="https://yuanzheshi.com/about/" title="About">
                     <span>About</span>
                 </a>
             </li>
             <li>
-                <a href="https://yuanzheshi.com/yuanzhe-shi-resume-may-2023-en.pdf" title="Resume">
+                <a href="https://yuanzheshi.com/yuanzhe-shi-resume-may-2024-en.pdf" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -191,7 +198,7 @@
 <article class="post-single">
   <header class="post-header">
     
-    <h1 class="post-title">
+    <h1 class="post-title entry-hint-parent">
       Hugo shortcode gallery
     </h1>
     <div class="post-description">
@@ -264,16 +271,17 @@ But we used <code>{{ $images := .Page.Resources.ByType &quot;image&quot; }}</cod
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://yuanzheshi.com/tags/css/">css</a></li>
-      <li><a href="https://yuanzheshi.com/tags/html/">html</a></li>
-      <li><a href="https://yuanzheshi.com/tags/hugo/">hugo</a></li>
+      <li><a href="https://yuanzheshi.com/tags/css/">Css</a></li>
+      <li><a href="https://yuanzheshi.com/tags/html/">Html</a></li>
+      <li><a href="https://yuanzheshi.com/tags/hugo/">Hugo</a></li>
     </ul>
   </footer>
 </article>
     </main>
     
 <footer class="footer">
-    <span>&copy; 2024 <a href="https://yuanzheshi.com">Yuanzhe Shi</a></span>
+        <span>&copy; 2024 <a href="https://yuanzheshi.com/">Yuanzhe Shi</a></span> · 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

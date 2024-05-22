@@ -31,11 +31,12 @@ const aspectRatio = window.innerWidth / window.innerHeight
 
 const width = cloud.parentElement.clientWidth, height = width /aspectRatio;
 
+const brct = cloud.getBoundingClientRect()
+
 const camera = new THREE.PerspectiveCamera( 60, aspectRatio, 100, 2000000 );
 camera.position.set( 0, 100, 2000 );
 
 const scene = new THREE.Scene();
-
 
 const geometry = new THREE.BoxGeometry( 2, 2, 2 );
 
@@ -622,14 +623,19 @@ function onPointerDown( event ) {
 	mouseDown = true
 }
 
+function onTouchMove(event) {
+	if (event.pageX >= brct.left && event.pageX <= brct.right && event.pageY >= brct.top && event.pageY <= brct.bottom){
+		event.preventDefault()
+	}
+}
+	
+
 function onPointerUp( event ) {
 	mouseDown = false
 }
 
 function onPointerMove( event ) {
 	if ( mouseDown === false ) return;
-
-	const brct = cloud.getBoundingClientRect()
 
 	if (event.pageX < brct.left || event.pageX > brct.right || event.pageY < brct.top || event.pageY > brct.bottom) return;
 
@@ -710,6 +716,9 @@ cloud.addEventListener( "pointermove", onPointerMove, false );
 
 window.addEventListener( 'keydown', onKeyDown );
 window.addEventListener( 'keyup', onKeyUp );
+
+window.addEventListener('touchstart', onTouchMove, false);
+window.addEventListener('touchmove', onTouchMove, false);
 
 const dir = new THREE.Vector3();
 
