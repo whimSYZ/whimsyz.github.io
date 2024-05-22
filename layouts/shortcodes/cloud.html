@@ -629,6 +629,12 @@ function onPointerUp( event ) {
 function onPointerMove( event ) {
 	if ( mouseDown === false ) return;
 
+	const brct = cloud.getBoundingClientRect()
+
+	if (event.pageX < brct.left || event.pageX > brct.right || event.pageY < brct.top || event.pageY > brct.bottom) return;
+
+	event.preventDefault()
+
 	const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 	const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
