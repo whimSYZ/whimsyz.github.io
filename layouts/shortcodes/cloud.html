@@ -380,7 +380,7 @@ void main() {
 			vec3 lightDir = vSunDirection * length(marchStep);
 			float costheta = dot(normalize(lightDir), normalize(marchStep));
 			float phase = max(HG(costheta, eccentricity), silver_intensity * HG(costheta, 0.99-silver_spread));
-			
+	
 			vec3 resultColor = vec3(0.0);
 			float alpha = 0.0;
 			float density = 0.0;
@@ -698,12 +698,12 @@ const onKeyUp = function ( event ) {
 };
 
 
-window.addEventListener( "pointerdown", onPointerDown, false );
-window.addEventListener( "pointerup", onPointerUp, false );
-window.addEventListener( "pointermove", onPointerMove, false );
+cloud.addEventListener( "pointerdown", onPointerDown, false );
+cloud.addEventListener( "pointerup", onPointerUp, false );
+cloud.addEventListener( "pointermove", onPointerMove, false );
 
-window.addEventListener( 'keydown', onKeyDown );
-window.addEventListener( 'keyup', onKeyUp );
+cloud.addEventListener( 'keydown', onKeyDown );
+cloud.addEventListener( 'keyup', onKeyUp );
 
 const dir = new THREE.Vector3();
 
