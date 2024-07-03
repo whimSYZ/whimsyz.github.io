@@ -366,7 +366,7 @@ void main() {
 			float grad = densityHeightGradient(heightFraction, cloudType);
 			float new_coverage = pow(coverage, remap(heightFraction, 0.7, 0.8, 1.0, mix(1.0, 0.5, anvilBias)));
 		
-			float coverageCloud = remap(baseCloud*grad, 1.0 - new_coverage, 1.0, 0.0, 1.0);
+			float coverageCloud = remap(baseCloud*grad, 1.0 - coverage, 1.0, 0.0, 1.0);
 			coverageCloud *= new_coverage;
 		
 			return clamp(coverageCloud, 0.0, 1.0);
@@ -629,6 +629,7 @@ function onTouchMove(event) {
 	}
 }
 
+
 function onPointerUp( event ) {
 	mouseDown = false
 }
@@ -736,6 +737,7 @@ const onMoveRight = function (distance) {
 	vector.setFromMatrixColumn( camera.matrix, 0 );
 	camera.position.addScaledVector( vector, distance );
 }
+
 
 
 function animate() {
