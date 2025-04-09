@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Hugo on Yuanzhe Shi</title>
-    <link>http://localhost:1313/tags/hugo/</link>
+    <link>https://yuanzheshi.com/tags/hugo/</link>
     <description>Recent content in Hugo on Yuanzhe Shi</description>
     <generator>Hugo -- 0.126.1</generator>
     <language>en</language>
     <lastBuildDate>Fri, 23 Apr 2021 01:48:41 +0800</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://yuanzheshi.com/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Hugo shortcode gallery</title>
-      <link>http://localhost:1313/posts/gallery/</link>
+      <link>https://yuanzheshi.com/posts/gallery/</link>
       <pubDate>Fri, 23 Apr 2021 01:48:41 +0800</pubDate>
-      <guid>http://localhost:1313/posts/gallery/</guid>
+      <guid>https://yuanzheshi.com/posts/gallery/</guid>
       <description>Creating a gallery shortcode for hugo</description>
     </item>
   </channel>

@@ -97,5 +97,5 @@ unsafe = true
 [[menu.main]]
     name = "Resume"
     weight = 5
-    url  = "/yuanzhe-shi-resume-may-2024-en.pdf"
+    url  = "/yuanzhe-shi-resume-may-2025-en.pdf"
 
