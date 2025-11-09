@@ -4,7 +4,7 @@ title = "Yuanzhe Shi"
 theme = "PaperMod"
 languagecode = "en"
 defaultcontentlanguage = "en"
-paginate = 20
+pagination.pagerSize  = 20
 canonifyurls = true
 pygmentsstyle = "b2"
 pygmentscodefences = true
@@ -29,7 +29,6 @@ pygmentscodefencesguesssyntax = true
     # "auto" (use preference set by browser)
     # "dark" (dark background, light foreground)
     # "light" (light background, dark foreground) (default)
-    colorscheme = "auto"
     defaultTheme = "auto"
     # Series see also post count
     maxSeeAlsoItems = 5

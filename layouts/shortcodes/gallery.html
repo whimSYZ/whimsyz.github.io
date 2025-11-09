@@ -7,20 +7,15 @@
 {{ end }}
 
 {{ $hover := .Get "hover" | default "none" }}
-
 {{ $caption := .Get "caption" | default "clip" }}
 
 {{ $sort := .Get "sort" | default "Name desc" }}
 
 {{ $sortOptions := (split $sort " ") }}
 
-{{ if eq (index $sortOptions 0) "Time" }}
-    {{ $sortOptions = slice "Exif.Date" (index $sortOptions 1) }}
-{{ end }}
-
 {{ $layout := .Get "layout" | default "waterfall" }}
 
-{{ $size := (int (.Get "size")) | default 150 }}
+{{ $size := (int (.Get "size")) | default 190 }}
 
 {{ $margin := .Get "margin" | default 0 }}
 
@@ -32,29 +27,30 @@
     {{ $limitHeight = false }}
 {{ end }}
 
-<!-- Load lazyload, masonary and photoswipe -->
 <script src="https://unpkg.com/packery@2/dist/packery.pkgd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
 
 <style>
     .grid {
-        position: block;
         height: 100%
+    }
+    
+    .grid-item {
+        display: flex;
     }
 
     .item-content {
         z-index: 1;
-        position: block;
+        position: relative;
         width: 100%;
         height: 100%;
         overflow: hidden;
-        margin-top: -16px;
-        margin-bottom: -16px;
     }
 
-    .item-content > img {
+    .item-content > a > img {
         display: block;
-        border-radius: 6px;
+        border-radius: 0;
+        margin: 0;
     }
 
     .crop-image {
@@ -65,82 +61,48 @@
         object-fit: cover;
     }
 
-    img{
-        transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out, filter 0.25s ease-in-out;  
+    img {
+        transition: opacity 0.25s ease-in-out;
     }
 
-    .item-content:hover img{
+    .item-content:hover img {
         opacity: 0;
-
-        transform: 
-        {{ if eq $hover "zoom" }}
-            scale(1.15);
-        {{ else if eq $hover "shrink" }}
-            scale(0.85);
-        {{ end }};/* don't forget the semi-colon */
-        
-        opacity: {{ if eq $hover "fade" }}
-            0.5;
-        {{ end }};
- 
-        filter: {{ if eq $hover "darken" }}
-            brightness(50%);  
-        {{ end }};  
     }
-
 
     .caption {
         position: absolute;
-        bottom: 0;
+        top: 0;
         left: 0;
-        right: 0;
-        color: 
-        {{ if eq $caption "clip" }}
-            transparent
-        {{ else }}
-            #FFF
-        {{ end }};
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        word-break: break-all;
 
         text-align: center;
-        font-size: 90%;
+        font-size: 1em;
+        font-weight: bold;
+        padding: 10px;
+        
+        background-size: cover;
+        background-position: center;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        
         opacity: 0;
-
-        {{ if ne $caption "clip" }}
-            background: rgba(0,0,0,0.5);
-        {{ end }}
-
-        {{ if eq $caption "clip" }}
-            background-clip: text;
-            -webkit-background-clip: text;
-            background-attachment: scroll;
-        {{ end }}
-
-        cursor: pointer;
-        
-
-        {{ if or (eq $caption "center") (eq $caption "clip") }}
-            top: 43%;
-        {{ end }}
-
-    }
-
-    {{ if ne $caption "none"  }}
-
-    .item-content:hover .caption{
         transition: opacity 0.25s ease-in-out;
-        opacity:1;
+        cursor: pointer;
     }
-        
-    {{ end }}
 
+    .item-content:hover .caption {
+        opacity: 1;
+    }
 
 </style>
-
-{{/* range $images}}
-{{ with .Exif }}
-{{ print .Tags }}
-{{ end }}
-{{ end */}}
 
 <div id="gallery-{{ .Page.File.Dir }}" class="grid" >
     {{ with $images }}
@@ -152,11 +114,11 @@
         {{ $scale = (mul $size (div ( index (seq 3 | shuffle) 0 ) 2.0) ) }}
     {{ end }}
 
-    {{ $origional_thumbnail := (.Resize (print (mul $scale 2) "x" " q100 jpg" )) }}
+    {{ $origional_thumbnail := (.Resize (print (mul $scale 2) "x" " png" )) }}
     {{ $thumbnail := $origional_thumbnail }}
-    {{ $thumbnail := $thumbnail.Resize (print (div $scale 3) "x" " q50 jpg" ) }}
+    {{ $thumbnail := $thumbnail.Resize (print (div $scale 3) "x" " png" ) }}
 
-    {{ $clip_img := (.Resize (print $scale "x25 ")).Filter (images.GaussianBlur 5) }}
+    {{ $clip_img := $thumbnail.Filter (images.GaussianBlur 1) }}
 
     {{ if eq $preview "blur" }}
         {{ $thumbnail = $thumbnail.Filter (images.GaussianBlur 2) }}
@@ -166,18 +128,28 @@
         {{ $thumbnail = $thumbnail.Resize ("1x1 box png") }}
     {{ end }}
 
-    {{ $caption := replaceRE "^(.+/)*" "" . | replaceRE "\\..*" "" | humanize  }}
+    {{ $caption := replaceRE "^(.+/)*" "" . | replaceRE "\\..*" "" | replaceRE "^\\d{4}-\\d{2}-\\d{2}-" "" | humanize  }}
+    
+    {{ $imgHeight := "" }}
+    {{ if $limitHeight }}
+        {{/* Use fixed scale for mosaic/crop */}}
+        {{ $imgHeight = $scale }}
+    {{ else }}
+        {{/* Calculate proportional height for waterfall */}}
+        {{ $imgHeight = int (mul (div (float .Height) .Width) $scale) }}
+    {{ end }}
     <div class="grid-item">
         <div class="item-content">
             <a href="{{ .RelPermalink }}" >
                 <img 
                 width="{{ $scale }}" 
-                height="{{ if $limitHeight }} {{ $scale }} {{ end }}" 
+                height="{{ $imgHeight }}" 
                 src="{{ $thumbnail.RelPermalink }}" 
                 class="lazy crop-image"
                 data-src="{{ $origional_thumbnail.RelPermalink }}"
                 />
-                <div class="caption" style="background-image: url({{ $clip_img.RelPermalink }}) ">
+
+                <div class="caption" style="background-image: url({{ $clip_img.RelPermalink }})">
                     {{ $caption }}
                 </div>
             </a>
@@ -190,9 +162,20 @@
 
 
 <script>
-    var pckry = new Packery('.grid', {
+    // 1. Get the grid element
+    var grid = document.querySelector('.grid');
+    
+    // 2. Initialize Packery
+    var pckry = new Packery(grid, {
         itemSelector: '.grid-item',
     });
 
-    var lazyLoadInstance = new LazyLoad({});
+    // 3. Initialize LazyLoad
+    var lazyLoadInstance = new LazyLoad({
+        // 4. Add the callback
+        callback_loaded: function(element) {
+            // 5. Tell Packery to re-layout *after* an image loads
+            pckry.layout();
+        }
+    });
 </script>
