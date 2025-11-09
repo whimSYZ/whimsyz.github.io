@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
+<html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Demo | Yuanzhe Shi</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="Yuanzhe Shi">
-<link rel="canonical" href="http://localhost:1313/tags/demo/">
-<link crossorigin="anonymous" href="http://localhost:1313/assets/css/stylesheet.a7ddc57396138f619288a896564025681aa69b6a193d67c077a997b6241fffd3.css" integrity="sha256-p93Fc5YTj2GSiKiWVkAlaBqmm2oZPWfAd6mXtiQf/9M=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="canonical" href="https://yuanzheshi.com/tags/demo/">
+<link crossorigin="anonymous" href="https://yuanzheshi.com/assets/css/stylesheet.53e8da6d6cb9d6d40059f5c4f8cab457682ba5a2a054868538b80bd49dc7b97e.css" integrity="sha256-U&#43;jabWy51tQAWfXE&#43;Mq0V2grpaKgVIaFOLgL1J3HuX4=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://yuanzheshi.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://yuanzheshi.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://yuanzheshi.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://yuanzheshi.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://yuanzheshi.com/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/demo/index.xml">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/tags/demo/">
+<link rel="alternate" type="application/rss+xml" href="https://yuanzheshi.com/tags/demo/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="https://yuanzheshi.com/tags/demo/">
 <noscript>
     <style>
         #theme-toggle,
@@ -40,43 +40,54 @@
                 --code-block-bg: rgb(46, 46, 51);
                 --code-bg: rgb(55, 56, 62);
                 --border: rgb(51, 51, 51);
+                color-scheme: dark;
             }
 
             .list {
                 background: var(--theme);
             }
 
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
+            .toc {
+                background: var(--entry);
             }
+        }
 
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
             }
         }
 
     </style>
 </noscript>
-</head>
-
-<body class="list" id="top">
 <script>
     if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
+        document.querySelector("html").dataset.theme = 'dark';
     } else if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
+       document.querySelector("html").dataset.theme = 'light';
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
     }
 
-</script>
+</script><meta property="og:url" content="https://yuanzheshi.com/tags/demo/">
+  <meta property="og:site_name" content="Yuanzhe Shi">
+  <meta property="og:title" content="Demo">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Demo">
+<meta name="twitter:description" content="">
 
-<header class="header">
+</head>
+<body class="list" id="top">
+    <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Yuanzhe Shi (Alt + H)">Yuanzhe Shi</a>
+            <a href="https://yuanzheshi.com/" accesskey="h" title="Yuanzhe Shi (Alt + H)">Yuanzhe Shi</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -100,27 +111,27 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/posts/" title="Blog">
+                <a href="https://yuanzheshi.com/posts/" title="Blog">
                     <span>Blog</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/gallery/" title="Gallery">
+                <a href="https://yuanzheshi.com/gallery/" title="Gallery">
                     <span>Gallery</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/cloud/" title="☁️">
+                <a href="https://yuanzheshi.com/cloud/" title="☁️">
                     <span>☁️</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/about/" title="About">
+                <a href="https://yuanzheshi.com/about/" title="About">
                     <span>About</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/yuanzhe-shi-resume-may-2025-en.pdf" title="Resume">
+                <a href="https://yuanzheshi.com/yuanzhe-shi-resume-may-2025-en.pdf" title="Resume">
                     <span>Resume</span>
                 </a>
             </li>
@@ -140,15 +151,15 @@
     </h2>
   </header>
   <div class="entry-content">
-    <p> Untitled artwork (1) Untitled artwork 2 (1) Untitled artwork 1 (1) Untitled artwork 4 (1) Untitled artwork 3 (1) 沸腾的红冷似冰 Summer waterloo Silhouette dance Opacity Summer dream Twilight question Goose pond 请予我无垠长夜一束光 Chemistry building 我一生流亡于自己的王国 Chinese new year 2024 New year 2024 Christmas 2023 十一月秋 23rd birthday Night city Shimmer 盛夏溽暑 枕边雷雨在酿就盛夏 匆匆那年 旧时约 无从释怀的春色如许 Me 2023 可我残破的春天所剩无几 让子弹迎接着风 Summer begin 暖阳里 彤红洗刷霓虹 打上花火 放生十万个地球 放生十万个地球 2 放生十万个地球 1 22nd birthday Light cicada and summer 白鸟过河滩 Star blindfold Dream origami My eyes dirty eyes Acrylic marker works Sun and summer University ave@philips Cloud blue Ballet of spring Bubbles Drown “隔了好久，我想看看海” End of day Frozen planet End of summer Christmas 2021 2021 12 22 Death of that girl 云出盈月将照我 正解世界 God of betrayal Cold cup warm sun 内脏间隙 21st birthday 金刚鹦鹉和你按顺序吻我 Apollo and dephne Sea Red spider lily in eyes 1 Cold rose Ningbo impression Journey 太陽みたいなキミが大好きだ Me 2021 Breaking time 等火山喷发的小星球 春暖花开去见你 Sick astronut in love Astronut under sea Astronut love Tree in gloom Red Little match girl Chrismas 2020 Me 2020 Water sadness 20th birthday Shanghai 2020 Caramel star July dream Life Kunqu Kunqu color Spring Waterloo spring Waterloo winter Crowd Sky Moon 1 青春之旅 Christmas 2019 Mobius strip Waterloo nights 心魔 芽 Waterloo sky 湛蓝瞳眸 Flamingo Fall 初秋 19th birthday 再见 Plants Summer 2019 4 Summer 2019 3 Summer 2019 2 Clouds Green light Another sky Bottle Summer 2019 1 Whale error Kubernetes The night before graduating Kitchener rain Hand 1 Mojito Christmas 2018 Our town poster 18th birthday Blue sky May 18, 2018 rainny May 17, 2018 sunny Gloom Hello 2018 Snowball ornament The dinning room Just fall Gear knight 3 d Death Picasso at the lapin agile Seven stories </p>
+    <p> 年少的我曾经有颗反季节的心 2025 10 04再一次谈到自己的年龄，前缀是我才还是我已经？ 等到海鸥的叫声结束了这个夏天 等到落日溶进风淹没了地平线 徘徊 隆冬到盛夏 退潮的光影就此作罢 悸动相隔时差 我怜爱的滚烫酸涩的 美态恶态满布锈斑的 与你分别的这个六月 早蝉的声线渐渐将雨遮掩 坐在你身边看最后一眼 你与渐热的季节 春天，春天，禁止入内 原野依然冬眠，夏至仍旧遥远 最后一次拥抱我吧，哪怕只有海风” “望一望新月挂月帘呀，相觑各一边，共赏漫天繁星一片“ 我们经历的瞬间 那些鲜活笑靥 删繁就简 被岁月压缩之后干瘪 粉雪 ねえ 心まで白く染められたなら 如果只转身后退就能回到那个夏天 把颜色逐一背下就能复现当时画面 晚风 扑朔 旧梦 “凡所听闻灿烂远征，都催生我的绝症” 做尘埃，做晚霞，我们总会再见的吧？ 成谜的夏天还未应答 是偏爱夏天吗？明知还故问吧？描写盛夏要用什么笔法？ 你亲自画满世界的俯瞰，好过听说一万种答案 抬眼时 季风过境 雨下个不停 当笑语和飘零一并埋在淅沥 关于2024年9月 cif门口的苹果树 我们总会在月亮上相遇 “喜怒爱恨五味杂陈虹膜里生根，沉埋于浩荡荡铅华年轮” “我撞见夏天云拨开月上弦，好梦渐圆一如你我初见” “我积攒夜晚将浪漫都兑换，吹散花瓣对海岸仔细看” “阳光和衬布发酵成灰的味道，寂寞的白云骑士在天上飘” “请抬起头看深渊上空，现实旁观宛如残酷孩童” 历经过世界盛大 却留恋这年华 “还留着晚灯锁控着锁孔的空，寂寞的晨钟又该有多沉重” 随风 跳 跳 风声也跑调 他唱青春什么的我才不要 雪来临时 无处躲藏 不要望向我时同样的一片冰凉 沸腾的红冷似冰 Summer waterloo Silhouette dance Opacity Summer dream Twilight question Goose pond 请予我无垠长夜一束光 Chemistry building 我一生流亡于自己的王国 Chinese new year 2024 New year 2024 Christmas 2023 十一月秋 23rd birthday Night city Shimmer 盛夏溽暑 枕边雷雨在酿就盛夏 匆匆那年 旧时约 无从释怀的春色如许 Me 2023 可我残破的春天所剩无几 让子弹迎接着风 Summer begin 暖阳里 彤红洗刷霓虹 打上花火 放生十万个地球 放生十万个地球 2 放生十万个地球 1 22nd birthday Light cicada and summer 白鸟过河滩 Star blindfold Dream origami My eyes dirty eyes Acrylic marker works Sun and summer University ave@philips Cloud blue Ballet of spring Bubbles Drown “隔了好久，我想看看海” End of day Frozen planet End of summer Christmas 2021 2021 12 22 Death of that girl 云出盈月将照我 正解世界 God of betrayal Cold cup warm sun 内脏间隙 21st birthday 金刚鹦鹉和你按顺序吻我 Apollo and dephne Sea Red spider lily in eyes 1 Cold rose Ningbo impression Journey 太陽みたいなキミが大好きだ Me 2021 Breaking time 等火山喷发的小星球 春暖花开去见你 Sick astronut in love Astronut under sea Astronut love Tree in gloom Red Little match girl Chrismas 2020 Me 2020 Water sadness 20th birthday Shanghai 2020 Caramel star July dream Life Kunqu Kunqu color Spring Waterloo spring Waterloo winter Crowd Sky Moon 1 青春之旅 Christmas 2019 Mobius strip Waterloo nights 心魔 芽 Waterloo sky 湛蓝瞳眸 Flamingo Fall 初秋 19th birthday 再见 Plants Summer 2019 4 Summer 2019 3 Summer 2019 2 Clouds Green light Another sky Bottle Summer 2019 1 Whale error Kubernetes The night before graduating Kitchener rain Hand 1 Mojito Christmas 2018 Our town poster 18th birthday Blue sky May 18, 2018 rainny May 17, 2018 sunny Gloom Hello 2018 Snowball ornament The dinning room Just fall Gear knight 3 d Death Picasso at the lapin agile Seven stories </p>
   </div>
-  <footer class="entry-footer"><span title='2024-05-08 00:00:00 +0000 UTC'>May 8, 2024</span>&nbsp;·&nbsp;Brandon</footer>
-  <a class="entry-link" aria-label="post link to Gallery" href="http://localhost:1313/gallery/"></a>
+  <footer class="entry-footer"><span title='2024-05-08 00:00:00 +0000 UTC'>May 8, 2024</span>&nbsp;·&nbsp;<span>Brandon</span></footer>
+  <a class="entry-link" aria-label="post link to Gallery" href="https://yuanzheshi.com/gallery/"></a>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2025 <a href="http://localhost:1313/">Yuanzhe Shi</a></span> · 
+        <span>&copy; 2025 <a href="https://yuanzheshi.com/">Yuanzhe Shi</a></span> · 
 
     <span>
         Powered by
@@ -163,9 +174,14 @@
 </a>
 
 <script>
-    let menu = document.getElementById('menu')
+    let menu = document.getElementById('menu');
     if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
         menu.onscroll = function () {
             localStorage.setItem("menu-scroll-position", menu.scrollLeft);
         }
@@ -206,11 +222,12 @@
 </script>
 <script>
     document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
             localStorage.setItem("pref-theme", 'light');
         } else {
-            document.body.classList.add('dark');
+            html.dataset.theme = 'dark';
             localStorage.setItem("pref-theme", 'dark');
         }
     })
